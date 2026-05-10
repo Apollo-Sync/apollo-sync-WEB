@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự án - ApolloSYNC</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            color: #67e8f9;
+            font-size: 2rem;
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        .project-card {
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+        .project-card.active {
+            border-color: #fde047;
+            box-shadow: 0 0 25px #fde047,
+                        0 0 50px rgba(253, 224, 71, 0.6);
+            transform: scale(1.03);
+        }
+        .project-header {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        .project-name {
+            text-align: center;
+            padding: 15px 0;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+        .project-actions {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 85px;
+            padding: 10px 14px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .btn-explorer { background: #334155; color: white; }
+        .btn-stake    { background: #22d3ee; color: #0f172a; }
+        .btn-twitter  { background: #1da1f2; color: white; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ApolloSYNC</div>
+            <div class="nav-links">
+                <a href="index.html">Trang chủ</a>
+                <a href="projects.html">Dự án</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 style="text-align:center; margin:40px 0 10px; color:#67e8f9;">Các Dự Án Đang Hỗ Trợ</h1>
+
+        <!-- ==================== MAINNET ==================== -->
+        <h2 class="section-title">🚀 MAINNET</h2>
+        <div class="project-grid">
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">DYDX</div>
+                <div class="project-name">DYDX</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #22d3ee, #0e7490);">CELESTIA</div>
+                <div class="project-name">CELESTIA</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">NIBIRU</div>
+                <div class="project-name">NIBIRU</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">PACTUS</div>
+                <div class="project-name">PACTUS</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #06b6d4, #0e7490);">ZETA</div>
+                <div class="project-name">ZETACHAIN</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TESTNET ==================== -->
+        <h2 class="section-title">🧪 TESTNET</h2>
+        <div class="project-grid">
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #a855f7, #6b21a8);">🔷</div>
+                <div class="project-name">WARDEN</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">🌌</div>
+                <div class="project-name">AirChains</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #f97316, #c2410c);">🏔️</div>
+                <div class="project-name">PRYZM</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #000000, #1f2937);">ⓘ</div>
+                <div class="project-name">INITIA</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">♾️</div>
+                <div class="project-name">SELF CHAIN</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #000000, #374151);">▲</div>
+                <div class="project-name">SHARDEUM</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">⚛️</div>
+                <div class="project-name">NAMADA</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #10b981, #047857);">ALIGNED</div>
+                <div class="project-name">ALIGNED LAYER</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #f472b6, #db2777);">∞</div>
+                <div class="project-name">DYMENSION</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #3b82f6, #1e3a8a);">🔵</div>
+                <div class="project-name">AVAIL</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">OG</div>
+                <div class="project-name">OG LAB</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #f472b6, #db2777);">M</div>
+                <div class="project-name">MANTRA</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">🌀</div>
+                <div class="project-name">EMPE</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header" style="background: linear-gradient(135deg, #6b21a8, #4c1d95);">◊</div>
+                <div class="project-name">MONAD</div>
+                <div class="project-actions">
+                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="#" class="action-btn btn-stake">Stake</a>
+                    <a href="#" class="action-btn btn-twitter">X</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        ApolloSYNC © 2026 • Staking luôn có rủi ro
+    </footer>
+
+    <script>
+        // Hiệu ứng click phát sáng vàng nhạt
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('a')) return; // Không trigger khi click nút
+                this.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
