@@ -1,6 +1,8 @@
 # apollo-sync-WEB
 build my web
 
+**Structure folder**
+```
 ApolloSYNC-website/
 ├── index.html
 ├── projects.html
@@ -45,3 +47,4 @@ ApolloSYNC-website/
 │   └── ... 
 │
 └── README.md                   # (tùy chọn) ghi chú dự án
+```
