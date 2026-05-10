@@ -208,3 +208,39 @@ header {
     background: rgba(15, 23, 42, 0.95) !important;
     backdrop-filter: blur(10px);
 }
+
+/* ==================== CONTACT SECTION ==================== */
+.contact-section {
+    text-align: center;
+    margin: 60px 0 40px;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.contact-desc {
+    color: #aaaaaa;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+}
+
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.contact-icon {
+    width: 52px;
+    height: 52px;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+}
+
+.contact-icon:hover {
+    transform: scale(1.18) translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+}
