@@ -36,14 +36,27 @@
                         0 0 50px rgba(253, 224, 71, 0.6);
             transform: scale(1.03);
         }
+        
         .project-header {
-            height: 140px;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
             position: relative;
+            background: #0f172a;
+            padding: 15px;
         }
+        .project-header img {
+            max-height: 130px;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
+            transition: transform 0.3s ease;
+        }
+        .project-card:hover .project-header img {
+            transform: scale(1.08);
+        }
+
         .project-name {
             text-align: center;
             padding: 15px 0;
@@ -92,52 +105,62 @@
         <div class="project-grid">
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">DYDX</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/DYDX.png" alt="DYDX Logo">
+                </div>
                 <div class="project-name">DYDX</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.dydx.trade" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/dYdX" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #22d3ee, #0e7490);">CELESTIA</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/CELESTIA.png" alt="CELESTIA Logo">
+                </div>
                 <div class="project-name">CELESTIA</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://celestia.explorers.guru" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/celestia" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">NIBIRU</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/NIBIRU.png" alt="NIBIRU Logo">
+                </div>
                 <div class="project-name">NIBIRU</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://nibiru.explorers.guru" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/NibiruChain" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">PACTUS</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/PACTUS.png" alt="PACTUS Logo">
+                </div>
                 <div class="project-name">PACTUS</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://pactusscan.com" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/PactusChain" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #06b6d4, #0e7490);">ZETA</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/ZETACHAIN.png" alt="ZETACHAIN Logo">
+                </div>
                 <div class="project-name">ZETACHAIN</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.zetachain.com" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/ZetaChain" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
         </div>
@@ -147,144 +170,149 @@
         <div class="project-grid">
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #a855f7, #6b21a8);">🔷</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/WARDEN.png" alt="WARDEN Logo">
+                </div>
                 <div class="project-name">WARDEN</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.wardenprotocol.org/" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/wardenprotocol" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">🌌</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/AirChains.png" alt="AirChains Logo">
+                </div>
                 <div class="project-name">AirChains</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.airchains.io" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/airchains_io" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #f97316, #c2410c);">🏔️</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/PRYZM.png" alt="PRYZM Logo">
+                </div>
                 <div class="project-name">PRYZM</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://chainsco.pe/pryzm" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/Pryzm_Zone" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #000000, #1f2937);">ⓘ</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/INITIA.png" alt="INITIA Logo">
+                </div>
                 <div class="project-name">INITIA</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.initia.xyz" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/initia" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">♾️</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/SELF-CHAIN.png" alt="SELF CHAIN Logo">
+                </div>
                 <div class="project-name">SELF CHAIN</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.selfchain.io" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/selfchainxyz" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #000000, #374151);">▲</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/SHARDEUM.png" alt="SHARDEUM Logo">
+                </div>
                 <div class="project-name">SHARDEUM</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.shardeum.org" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/shardeum" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #eab308, #ca8a04);">⚛️</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/NAMADA.png" alt="NAMADA Logo">
+                </div>
                 <div class="project-name">NAMADA</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.namada.net" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/namada" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #10b981, #047857);">ALIGNED</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/ALIGNED-LAYER.png" alt="ALIGNED LAYER Logo">
+                </div>
                 <div class="project-name">ALIGNED LAYER</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.alignedlayer.com" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/alignedlayer" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #f472b6, #db2777);">∞</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/DYMENSION.png" alt="DYMENSION Logo">
+                </div>
                 <div class="project-name">DYMENSION</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://dym.fyi" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/dymension" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #3b82f6, #1e3a8a);">🔵</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/AVAIL.png" alt="AVAIL Logo">
+                </div>
                 <div class="project-name">AVAIL</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.avail.so" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/AvailProject" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">OG</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/OG-LAB.png" alt="OG LAB Logo">
+                </div>
                 <div class="project-name">OG LAB</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.0g.ai" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/0G_labs" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #f472b6, #db2777);">M</div>
+                <div class="project-header">
+                    <img src="assets/Projectlogos/MANTRA.png" alt="MANTRA Logo">
+                </div>
                 <div class="project-name">MANTRA</div>
                 <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
+                    <a href="https://explorer.mantrachain.io" target="_blank" class="action-btn btn-explorer">Explorer</a>
                     <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
+                    <a href="https://x.com/MANTRA_Chain" target="_blank" class="action-btn btn-twitter">X</a>
                 </div>
             </div>
-
-            <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">🌀</div>
-                <div class="project-name">EMPE</div>
-                <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
-                    <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="project-header" style="background: linear-gradient(135deg, #6b21a8, #4c1d95);">◊</div>
-                <div class="project-name">MONAD</div>
-                <div class="project-actions">
-                    <a href="#" class="action-btn btn-explorer">Explorer</a>
-                    <a href="#" class="action-btn btn-stake">Stake</a>
-                    <a href="#" class="action-btn btn-twitter">X</a>
-                </div>
-            </div>
+         
         </div>
     </div>
 
@@ -293,10 +321,9 @@
     </footer>
 
     <script>
-        // Hiệu ứng click phát sáng vàng nhạt
         document.querySelectorAll('.project-card').forEach(card => {
             card.addEventListener('click', function(e) {
-                if (e.target.closest('a')) return; // Không trigger khi click nút
+                if (e.target.closest('a')) return;
                 this.classList.toggle('active');
             });
         });
