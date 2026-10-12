@@ -48,6 +48,95 @@ const LI=PR.map(p=>p.i).concat(HUB),S=P.map(()=>({x:0,y:0,z:0,s:1})),B=[];
 let W,H,dpr,cx,cy,cy0,R,ay=0,ax=.5,vy=.0035,vx=0,drag=false,lx=0,ly=0,sy,cyy,sxx,cxx,FX=0,FY=0,FZ=0,ZM=1,sz=1;
 const note=document.getElementById('note'),setNote=()=>{if(note)note.textContent=zt?NOTE.zoom:NOTE[filter||'none']};
 const hit=()=>{let b=26,r=null;for(const i of LI){const s=S[i],d=Math.hypot(s.x-mx,s.y-my);if(s.z>-.4&&d<b){b=d;r=i}}return r};
+// ---- 2 bàn tay đá đỡ cả hệ sinh thái, dựng 3D từ chấm trắng, mô phỏng theo ảnh mẫu (bàn tay khum, ngón cái gập vào lòng bàn tay).
+// Mô hình: bề mặt liền khối (signed-distance field): cổ tay + lòng bàn tay + gò ngón cái/út + 4 ngón thon dần 3 đốt + ngón cái 3 đốt, nối mượt bằng smooth-min.
+// Lấy mẫu bề mặt → lọc đều (blue-noise) → tô sáng theo pháp tuyến thật của bề mặt để đọc ra khối.
+// Hệ local (cm): gốc = cổ tay, +Y về phía ngón giữa, +Z = phía lòng bàn tay, +X = phía ngón cái (mô hình là TAY PHẢI, như ảnh mẫu). mir:1 = lật gương thành tay trái.
+// HAND.tilt: camera của tay nghiêng ít hơn mạng lưới · sway: biên độ đung đưa khi xoay · gap: khoảng cách giữa các chấm (đơn vị thế giới) · light: hướng sáng
+// HANDS[i].T: base = hướng gốc (cột = trục X,Y,Z của tay trong thế giới), rx/ry/rz = xoay thêm, s = cm→thế giới, tx/ty/tz = vị trí cổ tay · mir = lật gương
+// POSE: tư thế bàn tay mẫu — fingers: x,y gốc ngón · L = độ dài 3 đốt · r = bán kính · yaw = xoè · a = góc gập 3 đốt (rad) | thumb: o = gốc, L = độ dài, a = [yaw,pitch] mỗi đốt, r = bán kính
+const HAND={tilt:.155,sway:.1,gap:.0135,light:[-.35,.75,.55]};
+const POSE={cup:0,wr:[3,2.7],
+ fingers:[{x:2.5,y:8.6,L:[4.3,2.6,2.2],r:.95,yaw:.09,a:[.3,.42,.3]},{x:.85,y:8.9,L:[4.8,3,2.3],r:.98,yaw:.015,a:[.28,.42,.3]},
+  {x:-.85,y:8.6,L:[4.4,2.8,2.2],r:.92,yaw:-.06,a:[.32,.46,.34]},{x:-2.5,y:7.9,L:[3.5,2.1,2],r:.8,yaw:-.17,a:[.36,.5,.36]}],
+ thumb:{o:[2.3,.9,.3],L:[3.6,3,2.5],a:[[.55,.62],[0,.5],[-.75,.3]],r:[1.9,1.6,1.3,1]}};
+const HANDS=[
+ {T:{base:[[0,0,1],[0,1,0],[-1,0,0]],tx:-1.225,ty:-1.592,tz:-.3,rx:.1,ry:0,rz:-.3,s:.052},mir:1}, // tay TRÁI trên màn hình: nhỏ, xa, lòng bàn tay quay sang phải, ngón cái hướng ra phía người xem
+ {T:{base:[[0,1,0],[0,0,1],[1,0,0]],tx:-.266,ty:-1.978,tz:.4,rx:.147,ry:.446,rz:.137,s:.079},mir:0}      // tay phải trên màn hình: lớn, gần, ngửa lên
+];
+const HD=(()=>{
+ const mm=(A,B)=>A.map(r=>[0,1,2].map(j=>r[0]*B[0][j]+r[1]*B[1][j]+r[2]*B[2][j])),
+  rX=a=>[[1,0,0],[0,Math.cos(a),-Math.sin(a)],[0,Math.sin(a),Math.cos(a)]],rY=a=>[[Math.cos(a),0,Math.sin(a)],[0,1,0],[-Math.sin(a),0,Math.cos(a)]],rZ=a=>[[Math.cos(a),-Math.sin(a),0],[Math.sin(a),Math.cos(a),0],[0,0,1]];
+ const makeHand=(P=>{
+ const mn=Math.min,mx=Math.max,hyp=Math.hypot,sqrt=Math.sqrt;
+ const smin=(a,b,k)=>{const h=mx(k-Math.abs(a-b),0)/k;return mn(a,b)-h*h*k*.25};
+ const cone=(x,y,z,a,b,ra,rb)=>{const bx=b[0]-a[0],by=b[1]-a[1],bz=b[2]-a[2],px=x-a[0],py=y-a[1],pz=z-a[2],
+  t=mn(1,mx(0,(px*bx+py*by+pz*bz)/(bx*bx+by*by+bz*bz))),dx=px-bx*t,dy=py-by*t,dz=pz-bz*t;return sqrt(dx*dx+dy*dy+dz*dz)-(ra+(rb-ra)*t)};
+ const ell=(x,y,z,c,r)=>{const qx=x-c[0],qy=y-c[1],qz=z-c[2],k0=sqrt((qx/r[0])**2+(qy/r[1])**2+(qz/r[2])**2),k1=sqrt((qx/(r[0]*r[0]))**2+(qy/(r[1]*r[1]))**2+(qz/(r[2]*r[2]))**2);return k1<1e-9?-mn(r[0],r[1],r[2]):k0*(k0-1)/k1};
+ const box=(x,y,z,c,h,r)=>{const qx=Math.abs(x-c[0])-h[0],qy=Math.abs(y-c[1])-h[1],qz=Math.abs(z-c[2])-h[2];
+  return sqrt(mx(qx,0)**2+mx(qy,0)**2+mx(qz,0)**2)+mn(mx(qx,mx(qy,qz)),0)-r};
+ const chain=(o,L,dirs,r)=>{const J=[o];let p=o;for(let j=0;j<L.length;j++){const d=dirs[j];p=[p[0]+d[0]*L[j],p[1]+d[1]*L[j],p[2]+d[2]*L[j]];J.push(p)}
+  const c=[0,0,0];J.forEach(q=>{c[0]+=q[0]/J.length;c[1]+=q[1]/J.length;c[2]+=q[2]/J.length});
+  let br=0;J.forEach(q=>br=mx(br,hyp(q[0]-c[0],q[1]-c[1],q[2]-c[2])));return{J,r,c,br:br+r[0]+.3}};
+ const FG=P.fingers.map(f=>{let ang=0;const dirs=f.a.map((a,j)=>{ang+=a;const yw=f.yaw*(j?.5:1);return[Math.sin(yw)*Math.cos(ang),Math.cos(yw)*Math.cos(ang),Math.sin(ang)]});
+  const r=f.r;return chain([f.x,f.y,-.1],f.L,dirs,[r,r*.92,r*.84,r*.72])});
+ const TH=chain(P.thumb.o,P.thumb.L,P.thumb.a.map(([ya,pi])=>[Math.sin(ya)*Math.cos(pi),Math.cos(ya)*Math.cos(pi),Math.sin(pi)]),P.thumb.r);
+ const part=(c,x,y,z)=>{let q=1e9;const J=c.J,r=c.r;for(let j=0;j<J.length-1;j++)q=mn(q,cone(x,y,z,J[j],J[j+1],r[j],r[j+1]));return q};
+ const near=(c,x,y,z)=>hyp(x-c.c[0],y-c.c[1],z-c.c[2])-c.br;
+ function sdf(x,y,z){
+  let d=cone(x,y,z*1.45,[0,-4.6,0],[0,.8,0],P.wr[0],P.wr[1]);
+  d=smin(d,box(x,y,z,[0,5.1,-.15],[3.0,3.5,.55],1.15),1.6);
+  d=smin(d,ell(x,y,z,[2.2,2.9,.7],[2.6,3.4,1.8]),1.4);   // gò ngón cái
+  d=smin(d,ell(x,y,z,[-2.6,4.2,.1],[1.6,3.6,1.3]),1.2);   // gò ngón út
+  d=-smin(-d,ell(x,y,z,[.2,5.6,3.6+P.cup],[3.0,4.2,2.5]),.9); // lòng bàn tay hơi lõm
+  let fd=1e9;for(const f of FG)if(near(f,x,y,z)<d+1)fd=mn(fd,part(f,x,y,z));
+  if(fd<1e8)d=smin(d,fd,.55);
+  if(near(TH,x,y,z)<d+1.2)d=smin(d,part(TH,x,y,z),.9);
+  return mx(d,-(y+4.3))} // cắt phẳng ở cổ tay
+ function nrm(x,y,z){const e=.02,a=sdf(x+e,y,z),b=sdf(x,y+e,z),c=sdf(x,y,z+e),d=sdf(x,y,z);return[a-d,b-d,c-d]}
+ // lấy mẫu: lưới thô → chỉ lớp sát bề mặt → điểm ngẫu nhiên chiếu về bề mặt → lọc đều (blue-noise)
+ function cloud(rc,seed){
+  const cs=.8,cand=[];let zs=seed;const rnd=()=>{zs=(zs*1664525+1013904223)>>>0;return zs/4294967296};
+  const per=Math.max(2,Math.round(cs*cs*1.5/(rc*rc*.87)*.6));
+  for(let X=-8;X<9;X+=cs)for(let Y=-4.5;Y<23;Y+=cs)for(let Z=-7;Z<9;Z+=cs){
+   if(Math.abs(sdf(X+cs/2,Y+cs/2,Z+cs/2))>cs*.87)continue;
+   for(let i=0;i<per;i++){let px=X+rnd()*cs,py=Y+rnd()*cs,pz=Z+rnd()*cs,d=sdf(px,py,pz);
+    for(let it=0;it<3;it++){const g=nrm(px,py,pz),l=hyp(g[0],g[1],g[2])||1,e=.02;px-=g[0]/l*d;py-=g[1]/l*d;pz-=g[2]/l*d;d=sdf(px,py,pz)}
+    if(Math.abs(d)>.05)continue;
+    const g=nrm(px,py,pz),l=hyp(g[0],g[1],g[2])||1;cand.push([px,py,pz,g[0]/l,g[1]/l,g[2]/l])}}
+  const G=new Map(),keep=[],K=(i,j,k)=>((i+600)*1200+(j+600))*1200+(k+600);
+  for(let i=cand.length-1;i>0;i--){const j=rnd()*(i+1)|0;const t=cand[i];cand[i]=cand[j];cand[j]=t}
+  for(const p of cand){const i=Math.floor(p[0]/rc),j=Math.floor(p[1]/rc),k=Math.floor(p[2]/rc);let ok=1;
+   for(let a=-1;a<2&&ok;a++)for(let b=-1;b<2&&ok;b++)for(let c=-1;c<2&&ok;c++){const l=G.get(K(i+a,j+b,k+c));if(l)for(const o of l)if((o[0]-p[0])**2+(o[1]-p[1])**2+(o[2]-p[2])**2<rc*rc){ok=0;break}}
+   if(ok){const key=K(i,j,k);(G.get(key)||G.set(key,[]).get(key)).push(p);keep.push(p)}}
+  return keep}
+ return{sdf,cloud}})(POSE);
+ const A=[],ST=[];
+HANDS.forEach((h,hi)=>{const T=h.T,M=mm(mm(mm(rY(T.ry),rX(T.rx)),rZ(T.rz)),T.base),pts=makeHand.cloud(HAND.gap/T.s,7+hi*131),mr=h.mir?-1:1;ST.push(A.length);
+  for(const p of pts){const x=p[0]*mr*T.s,y=p[1]*T.s,z=p[2]*T.s,nx=p[3]*mr,ny=p[4],nz=p[5],yl=p[1];
+   A.push([M[0][0]*x+M[0][1]*y+M[0][2]*z+T.tx,M[1][0]*x+M[1][1]*y+M[1][2]*z+T.ty,M[2][0]*x+M[2][1]*y+M[2][2]*z+T.tz,
+    M[0][0]*nx+M[0][1]*ny+M[0][2]*nz,M[1][0]*nx+M[1][1]*ny+M[1][2]*nz,M[2][0]*nx+M[2][1]*ny+M[2][2]*nz,
+    yl<-.6?Math.max(0,1+(yl+.6)/3.6):1, // phần cẳng tay mờ dần về 0 ở mặt cắt
+    Math.min(1,Math.max(0,(yl+3)/22))])}}); // 0 ở cổ tay → 1 ở đầu ngón (sóng sáng chạy theo)
+ const n=A.length,F=()=>new Float32Array(n),X=F(),Y=F(),Z=F(),NX=F(),NY=F(),NZ=F(),Fd=F(),Hh=F();
+ A.forEach((a,i)=>{X[i]=a[0];Y[i]=a[1];Z[i]=a[2];NX[i]=a[3];NY[i]=a[4];NZ[i]=a[5];Fd[i]=a[6];Hh[i]=a[7]});
+ return{n,h1:ST[1],X,Y,Z,NX,NY,NZ,F:Fd,Hh,PX:F(),PY:F(),PZ:F(),PS:F(),PA:F(),on:true}})();
+// chiếu điểm của tay: không xoay 360° như mạng lưới mà chỉ đung đưa nhẹ (HAND.sway) để luôn đọc ra đúng tư thế; camera tay = camera mạng lưới - HAND.tilt, zoom/nghiêng dùng chung
+function hProj(T){const ha=1-zz;HD.on=ha>.03;if(!HD.on)return;const hy=HAND.sway*Math.sin(ay*.8),cw=Math.cos(hy),sw=Math.sin(hy),ah=ax-HAND.tilt,ch=Math.cos(ah),sh=Math.sin(ah),L=HAND.light,
+ k=W>900?1:.68,wv=((T/3200)%1.6)-.3,bob=.03*Math.sin(T/900),br=.025*Math.sin(T/1400);
+ for(let i=0;i<HD.n;i++){const bx=(HD.X[i]+(i<HD.h1?br:-br))*k,by=(HD.Y[i]+bob)*k,bz=HD.Z[i]*k;
+  const a=bx*cw+bz*sw;let c=-bx*sw+bz*cw;const b=by*ch-c*sh;c=by*sh+c*ch;const s=3.4/(3.4-Math.min(c-FZ,2.5)*.7);
+  HD.PX[i]=cx+(a-FX)*ZM*R*s;HD.PY[i]=cy-(b-FY)*ZM*R*s;HD.PZ[i]=c-FZ;
+  // pháp tuyến trong hệ camera: lt = độ sáng, fc = hướng về phía người xem
+  const nx=HD.NX[i]*cw+HD.NZ[i]*sw,nz0=-HD.NX[i]*sw+HD.NZ[i]*cw,nb=HD.NY[i]*ch-nz0*sh,nc=HD.NY[i]*sh+nz0*ch,lt=Math.max(0,nx*L[0]+nb*L[1]+nc*L[2]),
+   dp=D(c-FZ),pu=Math.max(0,1-Math.abs(HD.Hh[i]-wv)*5), // sóng sáng chạy từ cổ tay lên đầu ngón
+   vis=nc>-.05?1:.08,rim=Math.max(0,1-Math.abs(nc)/.3)*.3; // mặt khuất chỉ còn mờ nhạt; viền được tô sáng để ra đúng hình bàn tay
+  HD.PS[i]=(.7+.8*dp+.8*pu)*Math.min(s,1.6)*(1+(sz-1)*.5);HD.PA[i]=Math.min(1,HD.F[i]*ha*vis*(.14+.5*lt+.22*dp+rim+.45*pu))}}
+function hDraw(front){if(!HD.on)return;x.fillStyle='#fff';
+ for(let q=0;q<5;q++){x.globalAlpha=(q+.6)/5.2;x.beginPath();let any=0;
+  for(let i=0;i<HD.n;i++){if((HD.PZ[i]>=0)!==!!front||HD.PA[i]<.03||Math.min(4,HD.PA[i]*5|0)!==q)continue;x.moveTo(HD.PX[i]+HD.PS[i],HD.PY[i]);x.arc(HD.PX[i],HD.PY[i],HD.PS[i],0,7);any=1}
+  if(any)x.fill()}
+ x.globalAlpha=1}
 addEventListener('pointerdown',e=>{if(e.target.closest('a,button'))return;moved=0;drag=true;lx=e.clientX;ly=e.clientY;mx=e.clientX;my=e.clientY});
 addEventListener('pointercancel',()=>{drag=false});
 addEventListener('pointerup',e=>{if(!drag)return;drag=false;if(moved>=6||e.target.closest('a,button'))return;
@@ -77,6 +166,7 @@ function f(T){
  for(let i=0;i<P.length;i++){const q=P[i],u=q.u,l=q.pl,wx=q.w[0]*CA[l]-q.w[2]*SA[l],wz=q.w[0]*SA[l]+q.w[2]*CA[l],
   ux=u[0]*C2[l]-u[2]*S2[l],uz=u[0]*S2[l]+u[2]*C2[l],k=1+.1*Math.sin(2.2*u[0]+T*7e-4+l)+.08*Math.sin(2.7*u[1]-T*5e-4)+.06*Math.sin(2.5*u[2]+T*6e-4);
   pr((SC[l][0]+SR[l]*ux*k)*(1-e)+wx*e,(SC[l][1]+SR[l]*u[1]*k)*(1-e)+q.w[1]*e,(SC[l][2]+SR[l]*uz*k)*(1-e)+wz*e,S[i])}
+ hProj(T);hDraw(0); // bàn tay: nửa phía sau vẽ trước, nửa phía trước vẽ sau cùng (trước logo)
  // vỏ khối cầu (chế độ Spheres)
  if(e<.98)PL.forEach((pl,pi)=>{const hl=filter===pl.k,c=TAG[pl.k][1],o=pr(SC[pi][0],SC[pi][1],SC[pi][2],{}),r=SR[pi]*1.06*R*o.s*ZM;
   const g=x.createRadialGradient(o.x,o.y,r*.3,o.x,o.y,r);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,c);
@@ -105,6 +195,7 @@ function f(T){
   if(n.v){x.fillStyle='#fde047';x.shadowColor='#fde047';x.shadowBlur=16;x.beginPath();x.arc(s.x,s.y,(2.6+pu)*s.s*(.6+dp)*sz,0,7);x.fill();x.shadowBlur=0;
    x.strokeStyle=`rgba(253,224,71,${.35*dp})`;x.beginPath();x.arc(s.x,s.y,(7+pu*6)*s.s*sz,0,7);x.stroke()}
   else{const g=n.f;x.fillStyle=g>.05?`rgba(255,255,255,${.6+g*.4})`:`rgba(165,243,252,${.25+.75*dp})`;x.beginPath();x.arc(s.x,s.y,(1.2+dp*1.2+g*2.5)*s.s*sz,0,7);x.fill()}}
+ hDraw(1);
  // logo
  const L=LI.slice().sort((a,b)=>S[a].z-S[b].z),ZMo=W<700?.78:1;hov=drag?null:hit();
  for(const i of L){const s=S[i],p=P[i].logo,dp=D(s.z),col=p.t[0]?TAG[p.t[0]][1]:'#fde047',on=!filter||p.hub||p.t.includes(filter),h=hov===i;
