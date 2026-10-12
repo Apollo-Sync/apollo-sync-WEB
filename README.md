@@ -3,11 +3,14 @@ build my web
 
 **Structure folder**
 ```
-ApolloSYNC-website/
+apollo-sync-WEB/
 ├── index.html
 ├── projects.html
 ├── css/
 │   └── style.css
+├── js/
+│   ├── network.js   # canvas mạng blockchain động
+│   └── main.js      # reveal, counter, ticker
 ├── assets/
 │   ├── icons/                  # Icon nhỏ, social, UI
 │   │   ├── discord.svg

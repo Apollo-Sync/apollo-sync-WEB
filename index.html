@@ -1,85 +1,74 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApolloSYNC - Professional Validator</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ApolloSYNC - Professional Validator</title>
+<meta name="description" content="ApolloSYNC - Professional Blockchain Validator, Proof-of-Stake. Uptime cao, bảo mật tối đa.">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">ApolloSYNC</div>
-            <div class="nav-links">
-                <a href="index.html">Trang chủ</a>
-                <a href="projects.html">Dự án</a>
-            </div>
-        </nav>
-    </header>
+<canvas id="net"></canvas>
+<header><nav>
+<a class="logo" href="index.html"><img src="assets/logo.jpg" alt="">ApolloSYNC</a>
+<div class="nav-links"><a href="index.html" class="on">Trang chủ</a><a href="projects.html">Dự án</a></div>
+</nav></header>
 
-    <div class="container">
-        <div class="hero" style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
-    		<!-- === LOGO VUÔNG Ở GÓC TRÊN NHƯ ẢNH === -->
-    		<img 
-        		src="assets/logo.jpg" 
-        		alt="ApolloSYNC Logo" 
-        		style="width: 220px; height: 220px; 
-               			border: 6px solid #ffd700; 
-	               		border-radius: 16px; 
-        	       		box-shadow: 0 0 35px #ffd700, 0 0 60px rgba(255, 215, 0, 0.6); 
-               			flex-shrink: 0;">
-    
-    		<div>
-        		<h1>ApolloSYNC</h1>
-        		<p style="font-size:1.45rem;">Professional Blockchain Validator • Proof-of-Stake</p>
-    		</div>
-	</div>
+<section class="hero">
+<h1><em>secure</em> the<br>network,<br><em>sync</em> the future</h1>
+<p>Validator chuyên nghiệp Proof-of-Stake. Vận hành node 24/7 trên nhiều mạng blockchain, uptime cao, bảo mật tối đa.</p>
+<div><a class="btn" href="projects.html">Xem dự án</a><a class="btn ghost" href="#contact">Liên hệ</a></div>
+<div class="ticker" id="ticker" title="Mô phỏng"></div>
+</section>
 
-        <div class="card">
-            <h2>Giới thiệu</h2>
-            <p>Xin chào! Mình là validator chuyên nghiệp với kinh nghiệm vận hành node trên nhiều mạng blockchain.<br>
-            Cam kết uptime cao, bảo mật tối đa và hỗ trợ cộng đồng tận tình.</p>
-        </div>
+<div class="marquee reveal"><div class="track"><img src="assets/Projectlogos/AIRCHAINS.png" alt="AIRCHAINS"><img src="assets/Projectlogos/ALIGNED-LAYER.png" alt="ALIGNED-LAYER"><img src="assets/Projectlogos/AVAIL.png" alt="AVAIL"><img src="assets/Projectlogos/CELESTIA.png" alt="CELESTIA"><img src="assets/Projectlogos/DYDX.png" alt="DYDX"><img src="assets/Projectlogos/DYMENSION.png" alt="DYMENSION"><img src="assets/Projectlogos/INITIA.png" alt="INITIA"><img src="assets/Projectlogos/MANTRA.png" alt="MANTRA"><img src="assets/Projectlogos/NAMADA.png" alt="NAMADA"><img src="assets/Projectlogos/NIBIRU.png" alt="NIBIRU"><img src="assets/Projectlogos/OG-LAB.png" alt="OG-LAB"><img src="assets/Projectlogos/PACTUS.png" alt="PACTUS"><img src="assets/Projectlogos/PRYZM.png" alt="PRYZM"><img src="assets/Projectlogos/SELF-CHAIN.png" alt="SELF-CHAIN"><img src="assets/Projectlogos/SHARDEUM.png" alt="SHARDEUM"><img src="assets/Projectlogos/WARDEN.png" alt="WARDEN"><img src="assets/Projectlogos/ZETACHAIN.png" alt="ZETACHAIN"><img src="assets/Projectlogos/AIRCHAINS.png" alt="AIRCHAINS"><img src="assets/Projectlogos/ALIGNED-LAYER.png" alt="ALIGNED-LAYER"><img src="assets/Projectlogos/AVAIL.png" alt="AVAIL"><img src="assets/Projectlogos/CELESTIA.png" alt="CELESTIA"><img src="assets/Projectlogos/DYDX.png" alt="DYDX"><img src="assets/Projectlogos/DYMENSION.png" alt="DYMENSION"><img src="assets/Projectlogos/INITIA.png" alt="INITIA"><img src="assets/Projectlogos/MANTRA.png" alt="MANTRA"><img src="assets/Projectlogos/NAMADA.png" alt="NAMADA"><img src="assets/Projectlogos/NIBIRU.png" alt="NIBIRU"><img src="assets/Projectlogos/OG-LAB.png" alt="OG-LAB"><img src="assets/Projectlogos/PACTUS.png" alt="PACTUS"><img src="assets/Projectlogos/PRYZM.png" alt="PRYZM"><img src="assets/Projectlogos/SELF-CHAIN.png" alt="SELF-CHAIN"><img src="assets/Projectlogos/SHARDEUM.png" alt="SHARDEUM"><img src="assets/Projectlogos/WARDEN.png" alt="WARDEN"><img src="assets/Projectlogos/ZETACHAIN.png" alt="ZETACHAIN"></div></div>
 
-        <div class="card">
-            <h2>Thông số Server</h2>
-            <ul class="spec-list">
-                <li><strong>CPU:</strong> AMD Ryzen 9 5900X (12 cores / 24 threads)</li>
-                <li><strong>RAM:</strong> 64GB DDR4 3600MHz</li>
-                <li><strong>Storage:</strong> 2TB NVMe SSD</li>
-                <li><strong>GPU:</strong> RTX 3090 (tùy chọn cho một số nhiệm vụ)</li>
-                <li><strong>Hệ điều hành:</strong> Ubuntu Linux</li>
-                <li><strong>Kết nối:</strong> Traffic không giới hạn</li>
-            </ul>
-        </div>
+<section class="sec">
+<h2 class="reveal">con số <em>nổi bật</em></h2>
+<div class="stats reveal">
+<div class="stat"><b data-n="5">0</b><span>Mainnet đang vận hành</span></div>
+<div class="stat"><b data-n="14">0</b><span>Testnet tham gia</span></div>
+<div class="stat"><b data-n="24" data-s="/7">0</b><span>Giám sát liên tục</span></div>
+</div>
+</section>
 
-        <!-- ==================== PHẦN CONTACT ==================== -->
-        <div class="contact-section">
-            <h2>Liên hệ với ApolloSYNC</h2>
-            <p class="contact-desc">Kết nối với mình qua các nền tảng sau:</p>
-            
-            <div class="contact-icons">
-                <a href="https://discord.gg/YOUR_LINK" target="_blank" title="Discord">
-                    <img src="assets/icons/discord.png" alt="Discord" class="contact-icon">
-                </a>
-                <a href="https://t.me/Apollosync" target="_blank" title="Telegram">
-                    <img src="assets/icons/telegram.png" alt="Telegram" class="contact-icon">
-                </a>
-                <a href="https://x.com/Apollo_sync" target="_blank" title="X / Twitter">
-                    <img src="assets/icons/x-twitter.png" alt="X" class="contact-icon">
-                </a>
-                <a href="mailto:vihabetterlife@gmail.com" title="Gmail">
-                    <img src="assets/icons/gmail.png" alt="Gmail" class="contact-icon">        
-                </a>
-                <a href="https://github.com/Apollo-Sync" target="_blank" title="GitHub">
-                    <img src="assets/icons/github.png" alt="GitHub" class="contact-icon">
-                </a>
-            </div>
-        </div>
-    </div>
+<section class="sec">
+<h2 class="reveal">validator <em>hoạt động</em> thế nào</h2>
+<div class="flow">
+<div class="step reveal"><i>👛</i><h3>1. Delegate</h3><p>Bạn ủy quyền token cho validator, vẫn giữ quyền sở hữu.</p></div>
+<div class="step reveal"><i>🖥️</i><h3>2. Validate</h3><p>Node của ApolloSYNC xác thực giao dịch và ký block.</p></div>
+<div class="step reveal"><i>⛓️</i><h3>3. Consensus</h3><p>Các validator đồng thuận, block mới được thêm vào chuỗi.</p></div>
+<div class="step reveal"><i>💎</i><h3>4. Reward</h3><p>Phần thưởng staking được phân phối theo tỉ lệ ủy quyền.</p></div>
+</div>
+</section>
 
-    <footer>
-        ApolloSYNC © 2026 • Staking luôn có rủi ro
-    </footer>
+<section class="sec">
+<h2 class="reveal">hạ tầng <em>server</em></h2>
+<div class="card reveal"><ul class="spec-list">
+<li><strong>CPU</strong>AMD Ryzen 9 5900X (12 cores / 24 threads)</li>
+<li><strong>RAM</strong>64GB DDR4 3600MHz</li>
+<li><strong>Storage</strong>2TB NVMe SSD</li>
+<li><strong>GPU</strong>RTX 3090 (tùy chọn cho một số nhiệm vụ)</li>
+<li><strong>Hệ điều hành</strong>Ubuntu Linux</li>
+<li><strong>Kết nối</strong>Traffic không giới hạn</li>
+</ul></div>
+</section>
+
+<section class="contact-section reveal" id="contact">
+<h2><em>start</em> a<br>conversation</h2>
+<p class="contact-desc">Kết nối với ApolloSYNC qua các nền tảng sau</p>
+<div class="contact-icons">
+<a href="https://discord.gg/YOUR_LINK" target="_blank" title="Discord"><img src="assets/icons/discord.png" alt="Discord" class="contact-icon"></a>
+<a href="https://t.me/Apollosync" target="_blank" title="Telegram"><img src="assets/icons/telegram.png" alt="Telegram" class="contact-icon"></a>
+<a href="https://x.com/Apollo_sync" target="_blank" title="X"><img src="assets/icons/x-twitter.png" alt="X" class="contact-icon"></a>
+<a href="mailto:vihabetterlife@gmail.com" title="Gmail"><img src="assets/icons/gmail.png" alt="Gmail" class="contact-icon"></a>
+<a href="https://github.com/Apollo-Sync" target="_blank" title="GitHub"><img src="assets/icons/github.png" alt="GitHub" class="contact-icon"></a>
+</div>
+</section>
+
+<footer>ApolloSYNC © 2026 • Staking luôn có rủi ro</footer>
+<script src="js/network.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
