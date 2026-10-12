@@ -1,110 +1,27 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dự án - ApolloSYNC</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        .section-title {
-            text-align: center;
-            margin: 50px 0 30px;
-            color: #67e8f9;
-            font-size: 2rem;
-        }
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-        .project-card {
-            background: var(--card);
-            border: 1px solid #334155;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-        }
-        .project-card.active {
-            border-color: #fde047;
-            box-shadow: 0 0 25px #fde047,
-                        0 0 50px rgba(253, 224, 71, 0.6);
-            transform: scale(1.03);
-        }
-        
-        .project-header {
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: #0f172a;
-            padding: 15px;
-        }
-        .project-header img {
-            max-height: 130px;
-            max-width: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
-            transition: transform 0.3s ease;
-        }
-        .project-card:hover .project-header img {
-            transform: scale(1.08);
-        }
-
-        .project-name {
-            text-align: center;
-            padding: 15px 0;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: white;
-        }
-        .project-actions {
-            padding: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .action-btn {
-            flex: 1;
-            min-width: 85px;
-            padding: 10px 14px;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .btn-explorer { background: #334155; color: white; }
-        .btn-stake    { background: #22d3ee; color: #0f172a; }
-        .btn-twitter  { background: #1da1f2; color: white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dự án - ApolloSYNC</title>
+<meta name="description" content="ApolloSYNC - Professional Blockchain Validator, Proof-of-Stake. Uptime cao, bảo mật tối đa.">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">ApolloSYNC</div>
-            <div class="nav-links">
-                <a href="index.html">Trang chủ</a>
-                <a href="projects.html">Dự án</a>
-            </div>
-        </nav>
-    </header>
+<canvas id="net"></canvas>
+<header><nav>
+<a class="logo" href="index.html"><img src="assets/logo.jpg" alt="">ApolloSYNC</a>
+<div class="nav-links"><a href="index.html">Trang chủ</a><a href="projects.html" class="on">Dự án</a></div>
+</nav></header>
 
-    <div class="container">
-        <h1 style="text-align:center; margin:40px 0 10px; color:#67e8f9;">Các Dự Án Đang Hỗ Trợ</h1>
-
-        <!-- ==================== MAINNET ==================== -->
-        <h2 class="section-title">🚀 MAINNET</h2>
+<div class="container">
+<h1 class="page-title">các <em>mạng</em> đang<br>hỗ trợ</h1>
+<p style="color:#94a3b8;margin:16px 0 20px">Bấm vào thẻ để làm nổi bật dự án.</p>
+<h2 class="section-title reveal"><span class="live"></span><em>main</em>net</h2>
         <div class="project-grid">
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/DYDX.png" alt="DYDX Logo">
                 </div>
@@ -116,7 +33,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/CELESTIA.png" alt="CELESTIA Logo">
                 </div>
@@ -128,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/NIBIRU.png" alt="NIBIRU Logo">
                 </div>
@@ -140,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/PACTUS.png" alt="PACTUS Logo">
                 </div>
@@ -152,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/ZETACHAIN.png" alt="ZETACHAIN Logo">
                 </div>
@@ -166,10 +83,10 @@
         </div>
 
         <!-- ==================== TESTNET ==================== -->
-        <h2 class="section-title">🧪 TESTNET</h2>
+        <h2 class="section-title reveal"><em>test</em>net</h2>
         <div class="project-grid">
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/WARDEN.png" alt="WARDEN Logo">
                 </div>
@@ -181,9 +98,9 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
-                    <img src="assets/Projectlogos/AirChains.png" alt="AirChains Logo">
+                    <img src="assets/Projectlogos/AIRCHAINS.png" alt="AirChains Logo">
                 </div>
                 <div class="project-name">AirChains</div>
                 <div class="project-actions">
@@ -193,7 +110,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/PRYZM.png" alt="PRYZM Logo">
                 </div>
@@ -205,7 +122,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/INITIA.png" alt="INITIA Logo">
                 </div>
@@ -217,7 +134,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/SELF-CHAIN.png" alt="SELF CHAIN Logo">
                 </div>
@@ -229,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/SHARDEUM.png" alt="SHARDEUM Logo">
                 </div>
@@ -241,7 +158,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/NAMADA.png" alt="NAMADA Logo">
                 </div>
@@ -253,7 +170,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/ALIGNED-LAYER.png" alt="ALIGNED LAYER Logo">
                 </div>
@@ -265,7 +182,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/DYMENSION.png" alt="DYMENSION Logo">
                 </div>
@@ -277,7 +194,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/AVAIL.png" alt="AVAIL Logo">
                 </div>
@@ -289,7 +206,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/OG-LAB.png" alt="OG LAB Logo">
                 </div>
@@ -301,7 +218,7 @@
                 </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card reveal">
                 <div class="project-header">
                     <img src="assets/Projectlogos/MANTRA.png" alt="MANTRA Logo">
                 </div>
@@ -316,17 +233,8 @@
         </div>
     </div>
 
-    <footer>
-        ApolloSYNC © 2026 • Staking luôn có rủi ro
-    </footer>
-
-    <script>
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (e.target.closest('a')) return;
-                this.classList.toggle('active');
-            });
-        });
-    </script>
+<footer>ApolloSYNC © 2026 • Staking luôn có rủi ro</footer>
+<script src="js/network.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

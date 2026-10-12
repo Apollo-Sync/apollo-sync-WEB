@@ -1,246 +1,76 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #22d3ee;
-    --dark: #0f172a;
-    --card: rgba(30, 41, 59, 0.95);
-}
-
-/* ==================== BACKGROUND TOÀN BỘ WEBSITE ==================== */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #e2e8f0;
-    line-height: 1.7;
-    
-    /* Background ảnh */
-    background-image: url('../assets/images/background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;     /* ảnh không di chuyển khi cuộn */
-    
-    /* Overlay tối để chữ dễ đọc */
-    background-color: rgba(15, 23, 42, 0.85);   /* màu tối + độ trong suốt */
-    background-blend-mode: overlay;
-}
-
-/* Nếu muốn overlay mạnh hơn (chữ rõ hơn) */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.75);
-    z-index: -1;
-}
-
-header {
-    background: rgba(15, 23, 42, 0.98);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid #334155;
-}
-
-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.2rem 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.9rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.nav-links a {
-    color: #e2e8f0;
-    text-decoration: none;
-    margin-left: 32px;
-    font-weight: 500;
-}
-
-.nav-links a:hover {
-    color: var(--primary);
-}
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-/* ==================== TRANG CHỦ ==================== */
-.hero {
-    text-align: center;
-    padding: 80px 0 60px;
-}
-
-.hero h1 {
-    font-size: 3.2rem;
-    color: #67e8f9;
-    margin-bottom: 12px;
-}
-
-.card {
-    background: var(--card);
-    border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 30px;
-}
-
-h2 {
-    color: var(--primary);
-    margin-bottom: 18px;
-}
-
-.spec-list li {
-    padding: 14px 0;
-    border-bottom: 1px solid #334155;
-}
-
-.spec-list li:last-child {
-    border-bottom: none;
-}
-
-/* ==================== PROJECTS PAGE ==================== */
-.section-title {
-    text-align: center;
-    margin: 50px 0 30px;
-    color: #67e8f9;
-    font-size: 2rem;
-}
-
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-    margin-bottom: 60px;
-}
-
-.project-card {
-    background: var(--card);
-    border: 1px solid #334155;
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.4s ease;
-    cursor: pointer;
-}
-
-.project-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--primary);
-}
-
-.project-card.active {
-    border-color: #fde047;
-    box-shadow: 0 0 25px #fde047,
-                0 0 50px rgba(253, 224, 71, 0.6);
-    transform: scale(1.03);
-}
-
-.project-header {
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    position: relative;
-}
-
-.project-name {
-    text-align: center;
-    padding: 15px 0;
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: white;
-}
-
-.project-actions {
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.action-btn {
-    flex: 1;
-    min-width: 85px;
-    padding: 10px 14px;
-    text-align: center;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.btn-explorer { background: #334155; color: white; }
-.btn-stake    { background: #22d3ee; color: #0f172a; }
-.btn-twitter  { background: #1da1f2; color: white; }
-
-/* Footer */
-footer {
-    background: #0a101f;
-    padding: 50px 20px 30px;
-    text-align: center;
-    color: #64748b;
-    font-size: 0.95rem;
-}
-/* Tăng độ tương phản cho card khi có background ảnh */
-.card, .project-card {
-    background: rgba(30, 41, 59, 0.92) !important;
-    backdrop-filter: blur(8px);   /* hiệu ứng kính mờ hiện đại */
-}
-
-header {
-    background: rgba(15, 23, 42, 0.95) !important;
-    backdrop-filter: blur(10px);
-}
-
-/* ==================== CONTACT SECTION ==================== */
-.contact-section {
-    text-align: center;
-    margin: 60px 0 40px;
-    padding: 40px 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.contact-desc {
-    color: #aaaaaa;
-    margin-bottom: 30px;
-    font-size: 1.05rem;
-}
-
-.contact-icons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-    flex-wrap: wrap;
-}
-
-.contact-icon {
-    width: 52px;
-    height: 52px;
-    transition: all 0.3s ease;
-    border-radius: 12px;
-}
-
-.contact-icon:hover {
-    transform: scale(1.18) translateY(-6px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
-}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c:#22d3ee;--g:#fde047;--bg:#050b17;--card:rgba(15,23,42,.72);--line:rgba(148,163,184,.18)}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:#e2e8f0;line-height:1.7;background:var(--bg);overflow-x:hidden}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 30%,transparent 30%,var(--bg) 100%)}
+header{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(12px);background:rgba(5,11,23,.55);border-bottom:1px solid var(--line)}
+nav{max-width:1200px;margin:auto;padding:1rem 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.5rem;font-weight:800;color:var(--c);letter-spacing:.5px;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo img{width:34px;height:34px;border-radius:8px;border:2px solid var(--g)}
+.nav-links a{color:#e2e8f0;text-decoration:none;margin-left:28px;font-weight:500;position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--c);transition:.3s}
+.nav-links a:hover::after,.nav-links a.on::after{width:100%}
+.container{max-width:1100px;margin:auto;padding:110px 20px 40px}
+em{font-style:italic;color:var(--c);font-family:Georgia,serif;font-weight:400}
+.hero{pointer-events:none;min-height:92vh;display:flex;flex-direction:column;justify-content:center;max-width:1100px;margin:auto;padding:120px 20px 40px}
+.hero h1{font-size:clamp(2.6rem,7vw,5.6rem);line-height:1;font-weight:800;text-transform:lowercase;letter-spacing:-2px}
+.hero p{font-size:1.25rem;max-width:620px;margin:28px 0;color:#94a3b8}
+.hero .btn,.hero a{pointer-events:auto}
+.btn{display:inline-block;padding:14px 30px;border-radius:50px;font-weight:700;text-decoration:none;background:var(--c);color:#06202a;transition:.3s;margin-right:12px}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(34,211,238,.45)}
+.btn.ghost{background:transparent;color:#e2e8f0;border:1px solid var(--line)}
+.ticker{display:flex;gap:10px;margin-top:50px;flex-wrap:wrap;font:.8rem ui-monospace,monospace;color:#64748b}
+.blk{padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);animation:pop .5s}
+.blk b{color:var(--g)}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.9)}}
+.sec{max-width:1100px;margin:auto;padding:90px 20px}
+.sec>h2,.section-title{font-size:clamp(2rem,5vw,3.6rem);font-weight:800;text-transform:lowercase;color:#fff;margin-bottom:30px;letter-spacing:-1px;text-align:left}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.stat{padding:30px;border:1px solid var(--line);border-radius:18px;background:var(--card);backdrop-filter:blur(8px)}
+.stat b{display:block;font-size:3.4rem;color:var(--g);line-height:1}
+.stat span{color:#94a3b8}
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:26px 0;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.track{display:flex;gap:60px;width:max-content;animation:scroll 40s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+.track img{height:52px;width:auto;filter:grayscale(1) brightness(1.4);opacity:.7;transition:.3s}
+.track img:hover{filter:none;opacity:1}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;position:relative}
+.step{padding:28px;border:1px solid var(--line);border-radius:18px;background:var(--card);backdrop-filter:blur(8px);transition:.4s;position:relative;overflow:hidden}
+.step:hover{border-color:var(--c);transform:translateY(-8px)}
+.step i{font-style:normal;font-size:2.4rem}
+.step h3{color:var(--c);margin:8px 0}
+.step::after{content:"";position:absolute;top:0;left:-100%;width:60%;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);animation:sweep 3s infinite}
+@keyframes sweep{to{left:140%}}
+.card{border:1px solid var(--line);border-radius:18px;padding:32px;background:var(--card);backdrop-filter:blur(8px)}
+.spec-list{list-style:none}
+.spec-list li{padding:14px 0;border-bottom:1px solid var(--line);display:flex;gap:16px}
+.spec-list li:last-child{border:0}
+.spec-list strong{min-width:130px;color:var(--c)}
+.contact-section{text-align:center;padding:110px 20px}
+.contact-section h2{font-size:clamp(2.4rem,7vw,5.5rem);font-weight:800;text-transform:lowercase;line-height:1.05}
+.contact-desc{color:#94a3b8;margin:20px 0 34px}
+.contact-icons{display:flex;justify-content:center;gap:26px;flex-wrap:wrap}
+.contact-icon{width:56px;height:56px;border-radius:14px;transition:.3s}
+.contact-icon:hover{transform:scale(1.18) translateY(-6px);box-shadow:0 0 28px var(--c)}
+.reveal{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+footer{padding:40px 20px;text-align:center;color:#64748b;border-top:1px solid var(--line);background:rgba(5,11,23,.8)}
+/* projects */
+.page-title{font-size:clamp(2.4rem,7vw,5rem);font-weight:800;text-transform:lowercase;letter-spacing:-2px;line-height:1.05}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-bottom:50px}
+.project-card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:.4s;cursor:pointer;backdrop-filter:blur(8px);position:relative}
+.project-card:hover{transform:translateY(-10px);border-color:var(--c);box-shadow:0 0 30px rgba(34,211,238,.25)}
+.project-card.active{border-color:var(--g);box-shadow:0 0 25px var(--g),0 0 50px rgba(253,224,71,.5);transform:scale(1.03)}
+.project-header{height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(34,211,238,.12),transparent 70%);padding:15px}
+.project-header img{max-height:120px;max-width:100%;object-fit:contain;transition:.3s}
+.project-card:hover .project-header img{transform:scale(1.1)}
+.project-name{text-align:center;padding:12px 0;font-weight:700;font-size:1.2rem;color:#fff}
+.project-actions{padding:14px;display:flex;gap:10px;flex-wrap:wrap}
+.action-btn{flex:1;min-width:80px;padding:9px 12px;text-align:center;border-radius:8px;text-decoration:none;font-weight:600;font-size:.92rem}
+.btn-explorer{background:#334155;color:#fff}.btn-stake{background:var(--c);color:#06202a}.btn-twitter{background:#1da1f2;color:#fff}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px #4ade80;margin-right:8px;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+@media(max-width:640px){.nav-links a{margin-left:16px}.spec-list li{flex-direction:column;gap:2px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
