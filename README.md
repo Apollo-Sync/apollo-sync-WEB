@@ -1,53 +1,14 @@
-# apollo-sync-WEB
-build my web
+# ApolloSYNC website
 
-**Structure folder**
+Static site (HTML/CSS/JS) deployed on Cloudflare Workers.
+
 ```
-apollo-sync-WEB/
-├── index.html
-├── projects.html
-├── css/
-│   └── style.css
-├── js/
-│   ├── network.js   # canvas mạng blockchain động
-│   └── main.js      # reveal, counter, ticker
-├── assets/
-│   ├── icons/                  # Icon nhỏ, social, UI
-│   │   ├── discord.svg
-│   │   ├── telegram.svg
-│   │   ├── x-twitter.svg
-│   │   ├── github.svg
-│   │   ├── gmail.svg
-│   │   ├── docs.svg
-│   │   └── menu.svg            # (nếu có icon menu mobile)
-│   │
-│   ├── logos/                  # Logo chính và logo dự án
-│   │   ├── apollosync.png
-│   │   ├── apollosync-white.png
-│   │   ├── apollosync-icon.png
-│   │   └── projects/
-│   │       ├── cosmos.png
-│   │       ├── osmosis.png
-│   │       ├── akash.png
-│   │       ├── secret.png
-│   │       └── ... (các dự án khác)
-│   │
-│   ├── images/                 # Ảnh lớn, banner, screenshot
-│   │   ├── hero/
-│   │   │   └── hero-background.jpg
-│   │   ├── server/
-│   │   │   └── server-rack.jpg
-│   │   ├── screenshots/
-│   │   │   ├── dashboard-cosmos.jpg
-│   │   │   └── node-status.jpg
-│   │   └── banners/
-│   │
-│   └── illustrations/          # (tùy chọn) hình minh họa, infographic
-│
-├── projects/                   # Trang chi tiết dự án (nếu cần nhiều file)
-│   ├── cosmos.html
-│   ├── osmosis.html
-│   └── ... 
-│
-└── README.md                   # (tùy chọn) ghi chú dự án
+index.html        landing page (3D network scene)
+projects.html     mainnet / testnet projects
+css/style.css
+js/network.js     3D canvas: sphere <-> layered architecture (L2 / ZK / L1 / DA, Cosmos IBC)
+js/main.js        reveal on scroll, counters
+assets/           logo, project logos, icons
 ```
+
+Edit project tags/positions in `js/network.js` (`PR`, `FIX`, `ring`).

@@ -87,7 +87,7 @@ footer{padding:40px 20px;text-align:center;color:#64748b;border-top:1px solid va
 @media(max-width:900px){
  nav{padding:.7rem 16px}.logo{font-size:1.2rem}.logo img{width:28px;height:28px}
  .nav-links a{margin-left:18px;font-size:.95rem}
- .hero{min-height:auto;justify-content:flex-start;padding:max(58vh,400px) 18px 30px}
+ .hero{min-height:auto;justify-content:flex-start;padding:max(62vh,450px) 18px 30px}
  .hero h1{font-size:clamp(2.1rem,10.5vw,3.4rem);letter-spacing:-1px}
  .hero p{font-size:1rem;margin:16px 0}
  .hero .btn{display:block;text-align:center;margin:0 0 10px}
@@ -115,3 +115,8 @@ footer{padding:40px 20px;text-align:center;color:#64748b;border-top:1px solid va
  .project-card:hover{transform:none}
 }
 @media(max-width:380px){.flow{grid-template-columns:1fr}.stat b{font-size:1.6rem}}
+
+/* desktop: chữ nằm cột trái, mô hình 3D nằm cột phải, không chồng nhau */
+@media(min-width:901px){.hero{max-width:none;margin:0;padding-left:max(24px,6vw);padding-right:0}
+.hero>*{max-width:min(42vw,580px)}.hero h1{font-size:clamp(2.4rem,4.8vw,4.8rem)}}
+#note{min-height:0}
