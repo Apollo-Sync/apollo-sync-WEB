@@ -7,7 +7,7 @@ const PL=[{k:'l2',y:1,r:.8},{k:'zk',y:.5,r:.6},{k:'l1',y:0,r:1},{k:'da',y:-.75,r
 const SPIN=[.0003,-.0005,.0002,-.0003],SPIN2=[.0005,-.0007,.0003,-.0005];
 const SC=[[0,.85,0],[.85,.3,.1],[0,-.02,0],[0,-.85,0]],SR=[.26,.22,.46,.28];
 const ZS=[3,3.3,1.9,3],ZL=[2.2,2.8,1.5,2.2];
-const NOTE={none:'Drag to rotate. Click a group to zoom.',l1:'Base chains with their own validators.',l2:'Rollups that settle on Layer 1.',cosmos:'Sovereign chains linked by IBC.',da:'Where rollups publish their data.',zk:'Proofs sent up to Layer 1.',zoom:'Click a logo to open it. Click elsewhere to zoom out.'};
+const NOTE={none:'Scroll to zoom, drag to rotate. Click a logo for details.',l1:'Base chains with their own validators.',l2:'Rollups that settle on Layer 1.',cosmos:'Sovereign chains linked by IBC.',da:'Where rollups publish their data.',zk:'Proofs sent up to Layer 1.',zoom:'Click a logo to open it. Click elsewhere to zoom out.'};
 const PR=[['DYDX','DYDX',['cosmos','l1']],['Celestia','CELESTIA',['da','cosmos']],['Nibiru','NIBIRU',['cosmos','l1']],['Pactus','PACTUS',['l1']],['ZetaChain','ZETACHAIN',['l1','cosmos']],
 ['Warden','WARDEN',['cosmos','l1']],['AirChains','AIRCHAINS',['l2','zk']],['Pryzm','PRYZM',['cosmos']],['Initia','INITIA',['l1','cosmos']],['Self Chain','SELF-CHAIN',['cosmos','l1']],
 ['Shardeum','SHARDEUM',['l1']],['Namada','NAMADA',['l1']],['Aligned Layer','ALIGNED-LAYER',['zk']],['Dymension','DYMENSION',['l2','cosmos']],['Avail','AVAIL',['da']],['0G Labs','OG-LAB',['l1']],['MANTRA','MANTRA',['cosmos','l1']]]
@@ -46,8 +46,12 @@ LK.push([I('Celestia'),I('Avail'),'da','#34d399']);
 LK.push([I('AirChains'),I('Aligned Layer'),'zk','#fb923c'],[I('Aligned Layer'),HUB,'zk','#fb923c']);
 const LI=PR.map(p=>p.i).concat(HUB),S=P.map(()=>({x:0,y:0,z:0,s:1})),B=[];
 let W,H,dpr,cx,cy,cy0,R,ay=0,ax=.5,vy=.0035,vx=0,drag=false,lx=0,ly=0,sy,cyy,sxx,cxx,FX=0,FY=0,FZ=0,ZM=1,sz=1;
+// xoay tự do: UQ = quaternion người dùng (kéo chuột, theo trục màn hình) · U = ma trận 3x3 tương ứng, áp lên camera mặc định
+// zoom tự do: UZ (đang hiển thị) / UZt (mục tiêu) · OX,OY = dịch chuyển màn hình để zoom ngay tại vị trí con trỏ · SPF = hệ số tự quay (giảm khi rê chuột vào) · TV = thời gian ảo cho tự quay
+let U=[1,0,0,0,1,0,0,0,1],UQ=[1,0,0,0],UZ=1,UZt=1,OX=0,OY=0,OXt=0,OYt=0,SPF=1,TV=0,Tp=0,sel=null,overP=false;
+const inMod=()=>{const zc=Math.max(UZ,1);return Math.abs(mx-cx-OX)<R*1.8*zc&&Math.abs(my-cy-OY)<R*1.9*zc};
 const note=document.getElementById('note'),setNote=()=>{if(note)note.textContent=zt?NOTE.zoom:NOTE[filter||'none']};
-const hit=()=>{let b=26,r=null;for(const i of LI){const s=S[i],d=Math.hypot(s.x-mx,s.y-my);if(s.z>-.4&&d<b){b=d;r=i}}return r};
+const hit=()=>{if(overP)return null;let b=1,r=null;for(const i of LI){const s=S[i],d=Math.hypot(s.x-mx,s.y-my),rr=Math.max(26,(P[i].logo.hub?20:11+13*D(s.z))*s.s*sz+6);if(s.z>-.4&&d<rr&&d/rr<b){b=d/rr;r=i}}return r};
 // ---- 2 bàn tay đá đỡ cả hệ sinh thái, dựng 3D từ chấm trắng, mô phỏng theo ảnh mẫu (bàn tay khum, ngón cái gập vào lòng bàn tay).
 // Mô hình: bề mặt liền khối (signed-distance field): cổ tay + lòng bàn tay + gò ngón cái/út + 4 ngón thon dần 3 đốt + ngón cái 3 đốt, nối mượt bằng smooth-min.
 // Lấy mẫu bề mặt → lọc đều (blue-noise) → tô sáng theo pháp tuyến thật của bề mặt để đọc ra khối.
@@ -125,10 +129,11 @@ HANDS.forEach((h,hi)=>{const T=h.T,M=mm(mm(mm(rY(T.ry),rX(T.rx)),rZ(T.rz)),T.bas
 function hProj(T){const ha=1-zz;HD.on=ha>.03;if(!HD.on)return;const hy=HAND.sway*Math.sin(ay*.8),cw=Math.cos(hy),sw=Math.sin(hy),ah=ax-HAND.tilt,ch=Math.cos(ah),sh=Math.sin(ah),L=HAND.light,
  k=W>900?1:.68,wv=((T/3200)%1.6)-.3,bob=.03*Math.sin(T/900),br=.025*Math.sin(T/1400);
  for(let i=0;i<HD.n;i++){const bx=(HD.X[i]+(i<HD.h1?br:-br))*k,by=(HD.Y[i]+bob)*k,bz=HD.Z[i]*k;
-  const a=bx*cw+bz*sw;let c=-bx*sw+bz*cw;const b=by*ch-c*sh;c=by*sh+c*ch;const s=3.4/(3.4-Math.min(c-FZ,2.5)*.7);
-  HD.PX[i]=cx+(a-FX)*ZM*R*s;HD.PY[i]=cy-(b-FY)*ZM*R*s;HD.PZ[i]=c-FZ;
+  const a0=bx*cw+bz*sw;let c0=-bx*sw+bz*cw;const b0=by*ch-c0*sh;c0=by*sh+c0*ch;
+  const a=U[0]*a0+U[1]*b0+U[2]*c0,b=U[3]*a0+U[4]*b0+U[5]*c0,c=U[6]*a0+U[7]*b0+U[8]*c0,s=3.4/(3.4-Math.min(c-FZ,2.5)*.7);
+  HD.PX[i]=cx+OX+(a-FX)*ZM*R*s;HD.PY[i]=cy+OY-(b-FY)*ZM*R*s;HD.PZ[i]=c-FZ;
   // pháp tuyến trong hệ camera: lt = độ sáng, fc = hướng về phía người xem
-  const nx=HD.NX[i]*cw+HD.NZ[i]*sw,nz0=-HD.NX[i]*sw+HD.NZ[i]*cw,nb=HD.NY[i]*ch-nz0*sh,nc=HD.NY[i]*sh+nz0*ch,lt=Math.max(0,nx*L[0]+nb*L[1]+nc*L[2]),
+  const nx0=HD.NX[i]*cw+HD.NZ[i]*sw,nz0=-HD.NX[i]*sw+HD.NZ[i]*cw,nb0=HD.NY[i]*ch-nz0*sh,nc0=HD.NY[i]*sh+nz0*ch,nx=U[0]*nx0+U[1]*nb0+U[2]*nc0,nb=U[3]*nx0+U[4]*nb0+U[5]*nc0,nc=U[6]*nx0+U[7]*nb0+U[8]*nc0,lt=Math.max(0,nx*L[0]+nb*L[1]+nc*L[2]),
    dp=D(c-FZ),pu=Math.max(0,1-Math.abs(HD.Hh[i]-wv)*5), // sóng sáng chạy từ cổ tay lên đầu ngón
    vis=nc>-.05?1:.08,rim=Math.max(0,1-Math.abs(nc)/.3)*.3; // mặt khuất chỉ còn mờ nhạt; viền được tô sáng để ra đúng hình bàn tay
   HD.PS[i]=(.7+.8*dp+.8*pu)*Math.min(s,1.6)*(1+(sz-1)*.5);HD.PA[i]=Math.min(1,HD.F[i]*ha*vis*(.14+.5*lt+.22*dp+rim+.45*pu))}}
@@ -137,34 +142,110 @@ function hDraw(front){if(!HD.on)return;x.fillStyle='#fff';
   for(let i=0;i<HD.n;i++){if((HD.PZ[i]>=0)!==!!front||HD.PA[i]<.03||Math.min(4,HD.PA[i]*5|0)!==q)continue;x.moveTo(HD.PX[i]+HD.PS[i],HD.PY[i]);x.arc(HD.PX[i],HD.PY[i],HD.PS[i],0,7);any=1}
   if(any)x.fill()}
  x.globalAlpha=1}
-addEventListener('pointerdown',e=>{if(e.target.closest('a,button'))return;moved=0;drag=true;lx=e.clientX;ly=e.clientY;mx=e.clientX;my=e.clientY});
+// ---- bảng thông tin dự án kiểu bảng điện tử (HUD): bám theo node, có đường nối, hiệu ứng bật CRT + gõ chữ
+// INFO (tuỳ chọn): điền thông tin riêng cho từng dự án, ví dụ INFO['Celestia']={desc:'...',url:'https://...',stats:[['TVL','$1B'],['APR','12%'],['NODE','#3']]}
+// Thiếu thì tự lấy từ nhóm (Layer 1/2, Cosmos, DA, ZK) và các liên kết trong mạng lưới.
+const INFO={};
+const LKN={cosmos:'IBC',da:'DA',l2:'Settle',zk:'ZK'},esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let nd=null,ndT=0,ndW=312,ndH=300;
+(()=>{const st=document.createElement('style');st.textContent=`
+.nd-info{position:fixed;left:0;top:0;z-index:60;display:none;width:312px;max-width:calc(100vw - 16px);box-sizing:border-box;padding-bottom:12px;color:#cfe9ff;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+ background:linear-gradient(180deg,rgba(7,18,36,.95),rgba(3,9,20,.97));border:1px solid var(--c);box-shadow:inset 0 0 28px -12px var(--c),0 0 26px -6px var(--c),0 14px 44px rgba(0,0,0,.6);animation:ndOn .6s cubic-bezier(.2,.8,.2,1) both;overflow:hidden}
+.nd-info::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);z-index:2}
+.nd-info::after{content:"";position:absolute;left:0;right:0;height:46px;top:-46px;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,255,255,.07),transparent);animation:ndScan 3.6s linear infinite;z-index:2}
+.nd-info>*{animation:ndRow .45s both;animation-delay:calc(var(--d,0)*70ms + .25s)}
+.nd-cor{position:absolute;inset:3px;pointer-events:none;z-index:3;background:
+ linear-gradient(var(--c),var(--c)) 0 0/12px 2px,linear-gradient(var(--c),var(--c)) 0 0/2px 12px,
+ linear-gradient(var(--c),var(--c)) 100% 0/12px 2px,linear-gradient(var(--c),var(--c)) 100% 0/2px 12px,
+ linear-gradient(var(--c),var(--c)) 0 100%/12px 2px,linear-gradient(var(--c),var(--c)) 0 100%/2px 12px,
+ linear-gradient(var(--c),var(--c)) 100% 100%/12px 2px,linear-gradient(var(--c),var(--c)) 100% 100%/2px 12px;background-repeat:no-repeat}
+.nd-h{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.nd-led{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);animation:ndB 1.2s infinite}
+.nd-x{margin-left:auto;cursor:pointer;font-size:17px;line-height:1;padding:0 4px;color:#9fb8d2}.nd-x:hover{color:#fff}
+.nd-t{display:flex;gap:12px;align-items:center;padding:12px 12px 6px}
+.nd-t img{width:46px;height:46px;border-radius:50%;object-fit:contain;background:#0b1220;border:2px solid var(--c);box-shadow:0 0 14px -2px var(--c);flex:none}
+.nd-t h3{margin:0;font:600 18px/1.15 inherit;letter-spacing:.04em;color:#fff;text-shadow:0 0 12px var(--c)}
+.nd-tag{display:inline-block;margin:5px 5px 0 0;padding:0 7px;border:1px solid var(--tc);color:var(--tc);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.nd-d{margin:6px 12px 10px;color:#a9c4de;min-height:3.1em}
+.nd-c{display:inline-block;width:6px;height:12px;margin-left:2px;vertical-align:-2px;background:var(--c);animation:ndB .8s steps(1) infinite}
+.nd-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:0 12px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1)}
+.nd-g div{background:rgba(5,12,26,.92);padding:6px 8px;min-width:0}
+.nd-g small,.nd-l small{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#6f8aa6}
+.nd-g b{display:block;font-size:14px;font-weight:600;color:var(--c);text-shadow:0 0 10px var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nd-l{margin:0 12px 10px}
+.nd-ch{margin:5px 5px 0 0;padding:2px 7px;border:1px solid var(--tc);background:transparent;color:#dff2ff;font:inherit;font-size:10.5px;cursor:pointer}
+.nd-ch em{font-style:normal;color:var(--tc);margin-left:4px;font-size:9px;letter-spacing:.08em}
+.nd-ch:hover{background:rgba(255,255,255,.1)}
+.nd-b{display:block;margin:0 12px;padding:8px;text-align:center;text-decoration:none;border:1px solid var(--c);color:var(--c);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.nd-b:hover{background:var(--c);color:#04101f}
+.nd-f{margin:9px 12px 0;font-size:9px;letter-spacing:.12em;color:#56718c;text-transform:uppercase}
+@keyframes ndOn{0%{opacity:0;transform:scale(1,.02);filter:brightness(4)}30%{opacity:1;transform:scale(1,.02)}60%{transform:scale(1,1.04);filter:brightness(2)}100%{opacity:1;transform:none;filter:none}}
+@keyframes ndRow{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes ndScan{to{top:100%}}@keyframes ndB{50%{opacity:.25}}
+@media(max-width:699px){.nd-info{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto;max-height:70vh;overflow:auto}}`;
+ document.head.appendChild(st);
+ nd=document.createElement('div');nd.className='nd-info';document.body.appendChild(nd);
+ nd.addEventListener('pointerenter',()=>{overP=true});nd.addEventListener('pointerleave',()=>{overP=false});
+ nd.addEventListener('click',e=>{if(e.target.closest('.nd-x')){closeInfo();return}const b=e.target.closest('.nd-ch');if(b)openInfo(+b.dataset.i)})})();
+function closeInfo(){sel=null;overP=false;clearInterval(ndT);if(nd)nd.style.display='none'}
+function openInfo(i){const p=P[i].logo,inf=INFO[p.n]||{},col=p.t[0]?TAG[p.t[0]][1]:'#fde047',seen=new Set(),ln=[];
+ for(const[a,b,tg,c]of LK){if(a!==i&&b!==i)continue;const o=a===i?b:a,k=o+tg;if(seen.has(k))continue;seen.add(k);ln.push([o,tg,c])}
+ const tags=p.t.map(t=>`<span class="nd-tag" style="--tc:${TAG[t][1]}">${TAG[t][0]}</span>`).join('')||`<span class="nd-tag" style="--tc:${col}">${esc(p.sub||'Validator')}</span>`,
+  desc=inf.desc||(p.hub?'Validator at the center of the network, linked to the projects around it.':p.t.map(t=>NOTE[t]).join(' ')),
+  idx=p.hub?'HUB':String(PR.indexOf(p)+1).padStart(2,'0'),
+  stats=(inf.stats||[['TYPE',p.t[0]?TAG[p.t[0]][0]:(p.sub||'Validator')],['LINKS',ln.length],['NODE','#'+idx]]).slice(0,3),
+  url=inf.url||'projects.html',ext=/^https?:/.test(url);
+ nd.style.setProperty('--c',col);nd.dataset.i=i;
+ nd.innerHTML=`<i class="nd-cor"></i><div class="nd-h" style="--d:0"><i class="nd-led"></i><span>${p.hub?'Validator hub':'Project // '+idx}</span><b class="nd-x" title="Close">×</b></div>`+
+ `<div class="nd-t" style="--d:1"><img src="${esc(p.im.src)}" alt=""><div><h3>${esc(p.n)}</h3>${tags}</div></div>`+
+ `<p class="nd-d" style="--d:2"><span class="nd-ty"></span><i class="nd-c"></i></p>`+
+ `<div class="nd-g" style="--d:3">${stats.map(([l,v])=>`<div><small>${esc(l)}</small><b>${esc(v)}</b></div>`).join('')}</div>`+
+ (ln.length?`<div class="nd-l" style="--d:4"><small>Connected</small>${ln.map(([o,tg,c])=>`<button type="button" class="nd-ch" data-i="${o}" style="--tc:${c}">${esc(P[o].logo.n)}<em>${LKN[tg]}</em></button>`).join('')}</div>`:'')+
+ `<a class="nd-b" style="--d:5" href="${esc(url)}"${ext?' target="_blank" rel="noopener"':''}>Open project page ↗</a>`+
+ `<div class="nd-f" style="--d:6">sys · node link ok · ${ln.length} link${ln.length===1?'':'s'}</div>`;
+ sel=i;nd.style.display='block';nd.style.animation='none';void nd.offsetWidth;nd.style.animation='';
+ ndW=nd.offsetWidth||312;ndH=nd.offsetHeight||300;
+ const ty=nd.querySelector('.nd-ty');let k=0;clearInterval(ndT);setTimeout(()=>{if(sel!==i)return;ndT=setInterval(()=>{k+=2;ty.textContent=desc.slice(0,k);if(k>=desc.length)clearInterval(ndT)},16)},350)}
+// ---- kéo chuột để xoay 360° theo mọi hướng (quanh trục màn hình), cuộn chuột để zoom tại vị trí con trỏ
+const qm=(a,b)=>[a[0]*b[0]-a[1]*b[1]-a[2]*b[2]-a[3]*b[3],a[0]*b[1]+a[1]*b[0]+a[2]*b[3]-a[3]*b[2],a[0]*b[2]-a[1]*b[3]+a[2]*b[0]+a[3]*b[1],a[0]*b[3]+a[1]*b[2]-a[2]*b[1]+a[3]*b[0]];
+addEventListener('pointerdown',e=>{if(e.target.closest('a,button,.nd-info')||!inMod())return;moved=0;drag=true;lx=e.clientX;ly=e.clientY;mx=e.clientX;my=e.clientY});
 addEventListener('pointercancel',()=>{drag=false});
-addEventListener('pointerup',e=>{if(!drag)return;drag=false;if(moved>=6||e.target.closest('a,button'))return;
- const h=hit();
- if(zt){if(h!==null&&!P[h].logo.hub)location.href='projects.html';else{zt=0;setNote()}return}
- let g=null;if(h!==null)g=P[h].pl;else{let b=30;for(let i=0;i<P.length;i++){const d=Math.hypot(S[i].x-e.clientX,S[i].y-e.clientY);if(d<b){b=d;g=P[i].pl}}}
- if(g!==null){selG=g;zt=1;setNote()}});
-addEventListener('keydown',e=>{if(e.key==='Escape'){zt=0;setNote()}});
-addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;if(!drag)return;moved+=Math.abs(e.clientX-lx)+Math.abs(e.clientY-ly);const t=e.pointerType==='touch';vy=(e.clientX-lx)*.0006;vx=t?0:(e.clientY-ly)*.0006;ay+=(e.clientX-lx)*.006;if(!t)ax+=(e.clientY-ly)*.006;lx=e.clientX;ly=e.clientY});
+addEventListener('pointerup',e=>{if(!drag)return;drag=false;if(e.pointerType==='touch')setTimeout(()=>{if(!drag){mx=my=-1e3}},2500);
+ if(moved>=6||e.target.closest('a,button,.nd-info'))return;
+ const h=hit();if(h!==null)openInfo(h);else closeInfo()});
+addEventListener('wheel',e=>{if(e.target.closest&&e.target.closest('.nd-info'))return;mx=e.clientX;my=e.clientY;if(!inMod())return;e.preventDefault();
+ const d=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*400:e.deltaY,fz=Math.exp(-Math.max(-120,Math.min(120,d))*.0016),nz=Math.min(14,Math.max(.5,UZt*fz)),k=nz/UZt;
+ OXt=(mx-cx)-((mx-cx)-OXt)*k;OYt=(my-cy)-((my-cy)-OYt)*k;UZt=nz},{passive:false});
+document.addEventListener('mouseleave',()=>{mx=my=-1e3});
+addEventListener('keydown',e=>{if(e.key==='Escape'){zt=0;setNote();closeInfo()}});
+addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;if(!drag)return;moved+=Math.abs(e.clientX-lx)+Math.abs(e.clientY-ly);const t=e.pointerType==='touch',gy=(e.clientX-lx)*.0075,gx=t?0:(e.clientY-ly)*.0075;UQ=qm(qm([Math.cos(gx/2),Math.sin(gx/2),0,0],[Math.cos(gy/2),0,Math.sin(gy/2),0]),UQ);const l=Math.hypot(UQ[0],UQ[1],UQ[2],UQ[3]);UQ=UQ.map(v=>v/l);lx=e.clientX;ly=e.clientY});
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const t=c.dataset.tag;filter=filter===t?null:t;document.querySelectorAll('.chip').forEach(d=>d.classList.toggle('on',d.dataset.tag===filter));setNote()});
 document.querySelectorAll('.mode').forEach(c=>c.onclick=()=>{target=+c.dataset.m;B.length=0;zt=0;setNote();document.querySelectorAll('.mode').forEach(d=>d.classList.toggle('on',d===c))});
 function rs(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';x.setTransform(dpr,0,0,dpr,0,0);
  const dk=W>900;cx=dk?W*.74:W/2;cy0=dk?H*.52:Math.max(H*.3,150);R=dk?Math.min(W*.17,H*.28):Math.min(W*.37,H*.2)}
+cv.style.touchAction='pan-y';
 addEventListener('resize',rs);rs();
 setInterval(()=>{if(B.length<45){const L=m>.5?LY:SP;B.push({e:rnd()*L.E.length|0,t:0,d:rnd()<.5?1:-1,L:m>.5?1:0})}},90);
 function rot(X,Y,Z){let a=X*cyy+Z*sy,b=-X*sy+Z*cyy;X=a;Z=b;a=Y*cxx-Z*sxx;b=Y*sxx+Z*cxx;return[X,a,b]}
-function pr(X,Y,Z,o){const r=rot(X,Y,Z),a=(r[0]-FX)*ZM,b=(r[1]-FY)*ZM,c=r[2]-FZ,s=3.4/(3.4-Math.min(c,2.5));o.x=cx+a*R*s;o.y=cy-b*R*s;o.z=c;o.s=s;return o}
+function pr(X,Y,Z,o){const q=rot(X,Y,Z),r0=U[0]*q[0]+U[1]*q[1]+U[2]*q[2],r1=U[3]*q[0]+U[4]*q[1]+U[5]*q[2],r2=U[6]*q[0]+U[7]*q[1]+U[8]*q[2],a=(r0-FX)*ZM,b=(r1-FY)*ZM,c=r2-FZ,s=3.4/(3.4-Math.min(c,2.5));o.x=cx+OX+a*R*s;o.y=cy+OY-b*R*s;o.z=c;o.s=s;return o}
 function f(T){
  x.clearRect(0,0,W,H);cy=cy0-scrollY;if(cy+R*2.6<0){requestAnimationFrame(f);return}
  m+=(target-m)*.05;const e=m*m*(3-2*m);zz+=(zt-zz)*.08;
- if(!drag){ay+=vy;ax+=vx;vx*=.95;vy+=(.0035-vy)*.02}ax+=((.55-.12*(1-e))-ax)*(drag?0:.01);ax=Math.min(1.1,Math.max(.3,ax));
+ // trạng thái người dùng: chuột trong phạm vi mô hình (hoặc đang kéo / đang trên bảng thông tin) → giữ nguyên; ra ngoài → tự về trạng thái ban đầu
+ const dt=Math.min(64,T-Tp),zc=Math.max(UZ,1),inM=Math.abs(mx-cx-OX)<R*1.8*zc&&Math.abs(my-cy-OY)<R*1.9*zc,inside=drag||overP||inM;Tp=T;
+ UZ+=(UZt-UZ)*.2;OX+=(OXt-OX)*.2;OY+=(OYt-OY)*.2;
+ if(!inside){UZt+=(1-UZt)*.08;OXt*=.92;OYt*=.92;if(Math.abs(UZt-1)<.002)UZt=1;if(Math.abs(OXt)<.3)OXt=0;if(Math.abs(OYt)<.3)OYt=0;
+  let[w,qx,qy,qz]=UQ;if(w<0){w=-w;qx=-qx;qy=-qy;qz=-qz}w+=(1-w)*.08;qx*=.92;qy*=.92;qz*=.92;const l=Math.hypot(w,qx,qy,qz);UQ=1-w/l<1e-7?[1,0,0,0]:[w/l,qx/l,qy/l,qz/l]}
+ {const[w,qx,qy,qz]=UQ;U=[1-2*(qy*qy+qz*qz),2*(qx*qy-w*qz),2*(qx*qz+w*qy),2*(qx*qy+w*qz),1-2*(qx*qx+qz*qz),2*(qy*qz-w*qx),2*(qx*qz-w*qy),2*(qy*qz+w*qx),1-2*(qx*qx+qy*qy)]}
+ SPF+=((inside?(drag||UZ>1.25||sel!==null?0:.15):1)-SPF)*.1;TV+=dt*SPF;
+ ay+=.0035*SPF;ax+=((.55-.12*(1-e))-ax)*.01;ax=Math.min(1.1,Math.max(.3,ax));
  sy=Math.sin(ay);cyy=Math.cos(ay);sxx=Math.sin(ax);cxx=Math.cos(ax);
  // camera: zoom vào nhóm đang chọn
  FX=FY=FZ=0;ZM=1;const gc=rot(SC[selG][0]*(1-e),SC[selG][1]*(1-e)+(PL[selG].y-CY)*e,SC[selG][2]*(1-e));
- FX=gc[0]*zz;FY=gc[1]*zz;FZ=gc[2]*zz;ZM=1+(ZS[selG]*(1-e)+ZL[selG]*e-1)*zz;sz=1+(ZM-1)*.45;
- const CA=SPIN.map(v=>Math.cos(T*v*e)),SA=SPIN.map(v=>Math.sin(T*v*e)),C2=SPIN2.map(v=>Math.cos(T*v*(1-e))),S2=SPIN2.map(v=>Math.sin(T*v*(1-e)));
+ FX=gc[0]*zz;FY=gc[1]*zz;FZ=gc[2]*zz;ZM=(1+(ZS[selG]*(1-e)+ZL[selG]*e-1)*zz)*UZ;sz=1+(Math.min(ZM,7)-1)*.45;
+ const CA=SPIN.map(v=>Math.cos(TV*v*e)),SA=SPIN.map(v=>Math.sin(TV*v*e)),C2=SPIN2.map(v=>Math.cos(TV*v*(1-e))),S2=SPIN2.map(v=>Math.sin(TV*v*(1-e)));
  for(let i=0;i<P.length;i++){const q=P[i],u=q.u,l=q.pl,wx=q.w[0]*CA[l]-q.w[2]*SA[l],wz=q.w[0]*SA[l]+q.w[2]*CA[l],
-  ux=u[0]*C2[l]-u[2]*S2[l],uz=u[0]*S2[l]+u[2]*C2[l],k=1+.1*Math.sin(2.2*u[0]+T*7e-4+l)+.08*Math.sin(2.7*u[1]-T*5e-4)+.06*Math.sin(2.5*u[2]+T*6e-4);
+  ux=u[0]*C2[l]-u[2]*S2[l],uz=u[0]*S2[l]+u[2]*C2[l],k=1+.1*Math.sin(2.2*u[0]+TV*7e-4+l)+.08*Math.sin(2.7*u[1]-TV*5e-4)+.06*Math.sin(2.5*u[2]+TV*6e-4);
   pr((SC[l][0]+SR[l]*ux*k)*(1-e)+wx*e,(SC[l][1]+SR[l]*u[1]*k)*(1-e)+q.w[1]*e,(SC[l][2]+SR[l]*uz*k)*(1-e)+wz*e,S[i])}
  hProj(T);hDraw(0); // bàn tay: nửa phía sau vẽ trước, nửa phía trước vẽ sau cùng (trước logo)
  // vỏ khối cầu (chế độ Spheres)
@@ -202,13 +283,19 @@ function f(T){
   const r=(p.hub?20:11+13*dp)*ZMo*s.s*sz*(h?1.3:1)*(filter&&on&&!p.hub?1.15:1);
   x.globalAlpha=on?Math.min(1,.3+dp):.08;x.shadowColor=col;x.shadowBlur=on?18:0;x.fillStyle='#0b1220';x.beginPath();x.arc(s.x,s.y,r,0,7);x.fill();x.shadowBlur=0;
   if(p.im.complete&&p.im.naturalWidth){x.save();x.beginPath();x.arc(s.x,s.y,r-2,0,7);x.clip();const q=(r-2)*2,k=Math.max(p.im.naturalWidth,p.im.naturalHeight),w=p.im.naturalWidth/k*q,hh=p.im.naturalHeight/k*q;x.drawImage(p.im,s.x-w/2,s.y-hh/2,w,hh);x.restore()}
-  x.strokeStyle=col;x.lineWidth=h?3:2;x.beginPath();x.arc(s.x,s.y,r,0,7);x.stroke()}
+  x.strokeStyle=col;x.lineWidth=h?3:2;x.beginPath();x.arc(s.x,s.y,r,0,7);x.stroke();
+  if(i===sel){x.globalAlpha=.55;x.lineWidth=1.5;x.beginPath();x.arc(s.x,s.y,r+6+3*Math.sin(T/180),0,7);x.stroke()}}
  x.globalAlpha=1;
- if(hov!==null){const s=S[hov],p=P[hov].logo,txt=p.sub||p.t.map(t=>TAG[t][0]).join(' • '),col=p.t[0]?TAG[p.t[0]][1]:'#fde047';x.font='600 12px system-ui';
+ if(hov!==null&&hov!==sel){const s=S[hov],p=P[hov].logo,txt=p.sub||p.t.map(t=>TAG[t][0]).join(' • '),col=p.t[0]?TAG[p.t[0]][1]:'#fde047';x.font='600 12px system-ui';
   const w=Math.max(x.measureText(p.n).width,x.measureText(txt).width)+24,bx=Math.min(s.x+22,W-w-8),byy=s.y-30;
   x.fillStyle='rgba(5,11,23,.92)';x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.roundRect(bx,byy,w,46,8);x.fill();x.stroke();x.textAlign='left';x.fillStyle='#fff';x.fillText(p.n,bx+12,byy+19);x.fillStyle=col;x.fillText(txt,bx+12,byy+36)}
- const inSt=Math.abs(mx-cx)<R*1.8&&Math.abs(my-cy)<R*1.9;
- document.body.style.cursor=zt?(hov!==null&&!P[hov].logo.hub?'pointer':inSt?'zoom-out':''):(hov!==null||inSt?'zoom-in':'');
+ if(sel!==null&&nd){const s=S[sel],pl=P[sel].logo,col=pl.t[0]?TAG[pl.t[0]][1]:'#fde047',rN=(pl.hub?20:11+13*D(s.z))*s.s*sz+6;
+  if(W>=700){ndW=nd.offsetWidth||ndW;ndH=nd.offsetHeight||ndH;const right=s.x+rN+36+ndW<W-10,lf=right?s.x+rN+36:Math.max(10,s.x-rN-36-ndW),tp=Math.min(H-ndH-10,Math.max(10,s.y-ndH*.3));
+   if(Math.abs((+nd.dataset.px||0)-lf)>.4||Math.abs((+nd.dataset.py||0)-tp)>.4){nd.style.left=lf+'px';nd.style.top=tp+'px';nd.dataset.px=lf;nd.dataset.py=tp}
+   const ex=right?lf:lf+ndW,ey=Math.min(tp+ndH-14,Math.max(tp+14,s.y)),ux=right?1:-1;
+   x.save();x.strokeStyle=col;x.fillStyle=col;x.shadowColor=col;x.shadowBlur=8;x.globalAlpha=.85;x.lineWidth=1.2;x.setLineDash([5,4]);x.lineDashOffset=-T/40;
+   x.beginPath();x.moveTo(s.x+ux*rN,s.y);x.lineTo(ex-ux*14,s.y);x.lineTo(ex,ey);x.stroke();x.setLineDash([]);x.fillRect(ex-2.5,ey-2.5,5,5);x.restore()}}
+ document.body.style.cursor=inM&&!overP?(drag?'grabbing':hov!==null?'pointer':'grab'):'';
  requestAnimationFrame(f)}
 requestAnimationFrame(f);
 })();
