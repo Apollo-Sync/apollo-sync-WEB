@@ -1,18 +1,23 @@
 // Mỗi chấm = 1 node. "Spheres": mỗi loại là 1 khối cầu riêng. "Layers": 4 tầng xếp chồng. Bấm vào 1 nhóm để phóng to.
 (()=>{
 const cv=document.getElementById('net'),x=cv.getContext('2d'),rnd=Math.random;
+// ROOT = gốc site, tính từ vị trí file này (js/network.js → ../) để ảnh vẫn tải đúng khi trang nằm trong thư mục ngôn ngữ (/vi/, /ko/ …)
+const ROOT=document.currentScript&&document.currentScript.src?new URL('../',document.currentScript.src).href:'';
 const N=480,K=3,CY=.15,D=z=>Math.min(1,Math.max(0,(z+1.3)/2.6));
 const TAG={l1:['Layer 1','#22d3ee'],l2:['Layer 2','#c084fc'],cosmos:['Cosmos','#60a5fa'],da:['Modular / DA','#34d399'],zk:['ZK','#fb923c']};
 const PL=[{k:'l2',y:1,r:.8},{k:'zk',y:.5,r:.6},{k:'l1',y:0,r:1},{k:'da',y:-.75,r:.8}];
 const SPIN=[.0003,-.0005,.0002,-.0003],SPIN2=[.0005,-.0007,.0003,-.0005];
 const SC=[[0,.85,0],[.85,.3,.1],[0,-.02,0],[0,-.85,0]],SR=[.26,.22,.46,.28];
 const ZS=[3,3.3,1.9,3],ZL=[2.2,2.8,1.5,2.2];
+// tr(): dịch chữ do network.js tự vẽ (lang.js cung cấp window.apTr; chưa có thì giữ nguyên English). Chuỗi cần dịch được đăng ký ở window.apStrings.
+const tr=s=>s&&window.apTr?window.apTr(s):s;
 const NOTE={none:'Scroll to zoom, drag to rotate. Click a logo for details.',l1:'Base chains with their own validators.',l2:'Rollups that settle on Layer 1.',cosmos:'Sovereign chains linked by IBC.',da:'Where rollups publish their data.',zk:'Proofs sent up to Layer 1.',zoom:'Click a logo to open it. Click elsewhere to zoom out.'};
+window.apStrings=(window.apStrings||[]).concat(Object.values(NOTE).filter(Boolean),Object.values(TAG).map(t=>t[0]),['Validator hub','Project //','TYPE','LINKS','NODE','Validator','Connected','Settle','Open project page','sys · node link ok','link','links','Close','Sound on/off','Validator at the center of the network, linked to the projects around it.']);
 const PR=[['DYDX','DYDX',['cosmos','l1']],['Celestia','CELESTIA',['da','cosmos']],['Nibiru','NIBIRU',['cosmos','l1']],['Pactus','PACTUS',['l1']],['ZetaChain','ZETACHAIN',['l1','cosmos']],
 ['Warden','WARDEN',['cosmos','l1']],['AirChains','AIRCHAINS',['l2','zk']],['Pryzm','PRYZM',['cosmos']],['Initia','INITIA',['l1','cosmos']],['Self Chain','SELF-CHAIN',['cosmos','l1']],
 ['Shardeum','SHARDEUM',['l1']],['Namada','NAMADA',['l1']],['Aligned Layer','ALIGNED-LAYER',['zk']],['Dymension','DYMENSION',['l2','cosmos']],['Avail','AVAIL',['da']],['0G Labs','OG-LAB',['l1']],['MANTRA','MANTRA',['cosmos','l1']]]
-.map(([n,f,t])=>{const im=new Image();im.src='assets/Projectlogos/'+f+'.png';return{n,t,im}});
-const hubIm=new Image();hubIm.src='assets/logo.jpg';
+.map(([n,f,t])=>{const im=new Image();im.src=ROOT+'assets/Projectlogos/'+f+'.png';return{n,t,im}});
+const hubIm=new Image();hubIm.src=ROOT+'assets/logo.jpg';
 let filter=null,mx=-1e3,my=-1e3,hov=null,moved=0,m=0,target=1,selG=2,zt=0,zz=0;
 // ---- node
 const P=[];
@@ -50,7 +55,7 @@ let W,H,dpr,cx,cy,cy0,R,ay=0,ax=.5,vy=.0035,vx=0,drag=false,lx=0,ly=0,sy,cyy,sxx
 // zoom tự do: UZ (đang hiển thị) / UZt (mục tiêu) · OX,OY = dịch chuyển màn hình để zoom ngay tại vị trí con trỏ · SPF = hệ số tự quay (giảm khi rê chuột vào) · TV = thời gian ảo cho tự quay
 let U=[1,0,0,0,1,0,0,0,1],UQ=[1,0,0,0],UZ=1,UZt=1,OX=0,OY=0,OXt=0,OYt=0,SPF=1,TV=0,Tp=0,sel=null,overP=false;
 const inMod=()=>{const zc=Math.max(UZ,1);return Math.abs(mx-cx-OX)<R*1.8*zc&&Math.abs(my-cy-OY)<R*1.9*zc};
-const note=document.getElementById('note'),setNote=()=>{if(note)note.textContent=zt?NOTE.zoom:NOTE[filter||'none']};
+const note=document.getElementById('note'),setNote=()=>{if(note)note.textContent=tr(zt?NOTE.zoom:NOTE[filter||'none'])};
 const hit=()=>{if(overP)return null;let b=1,r=null;for(const i of LI){const s=S[i],d=Math.hypot(s.x-mx,s.y-my),rr=Math.max(26,(P[i].logo.hub?20:11+13*D(s.z))*s.s*sz+6);if(s.z>-.4&&d<rr&&d/rr<b){b=d/rr;r=i}}return r};
 // ---- 2 bàn tay đá đỡ cả hệ sinh thái, dựng 3D từ chấm trắng, mô phỏng theo ảnh mẫu (bàn tay khum, ngón cái gập vào lòng bàn tay).
 // Mô hình: bề mặt liền khối (signed-distance field): cổ tay + lòng bàn tay + gò ngón cái/út + 4 ngón thon dần 3 đốt + ngón cái 3 đốt, nối mượt bằng smooth-min.
@@ -195,32 +200,32 @@ const beep=(f,d=.05,v=.04,t0=0)=>{if(!SOUND)return;try{ac=ac||new(window.AudioCo
 function closeInfo(){sel=null;overP=false;ndTok++;if(nd)nd.style.display='none'}
 // ty = 1 dòng chữ sẽ được gõ lần lượt: a = phần đã gõ, b = phần còn lại (ẩn nhưng vẫn giữ chỗ nên bảng không bị nhảy kích thước)
 const ty=(t,cls='',sp=18,tag='span')=>`<${tag} class="ty ${cls}" data-t="${esc(t)}" data-s="${sp}"><span></span><span style="visibility:hidden">${esc(t)}</span></${tag}>`;
-function openInfo(i){const p=P[i].logo,inf=INFO[p.n]||{},col=p.t[0]?TAG[p.t[0]][1]:'#fde047',seen=new Set(),ln=[];
+function openInfo(i,q){const p=P[i].logo,inf=INFO[p.n]||{},col=p.t[0]?TAG[p.t[0]][1]:'#fde047',seen=new Set(),ln=[];
  for(const[a,b,tg,c]of LK){if(a!==i&&b!==i)continue;const o=a===i?b:a,k=o+tg;if(seen.has(k))continue;seen.add(k);ln.push([o,tg,c])}
- const tags=(p.t.length?p.t.map(t=>[TAG[t][0],TAG[t][1]]):[[p.sub||'Validator',col]]).map(([n,c])=>`<span class="nd-tag rv" style="--tc:${c}">${ty(n,'',24)}</span>`).join(''),
-  desc=inf.desc||(p.hub?'Validator at the center of the network, linked to the projects around it.':p.t.map(t=>NOTE[t]).join(' ')),
+ const tags=(p.t.length?p.t.map(t=>[tr(TAG[t][0]),TAG[t][1]]):[[tr(p.sub||'Validator'),col]]).map(([n,c])=>`<span class="nd-tag rv" style="--tc:${c}">${ty(n,'',24)}</span>`).join(''),
+  desc=inf.desc||(p.hub?tr('Validator at the center of the network, linked to the projects around it.'):p.t.map(t=>tr(NOTE[t])).join(' ')),
   idx=p.hub?'HUB':String(PR.indexOf(p)+1).padStart(2,'0'),
-  stats=(inf.stats||[['TYPE',p.t[0]?TAG[p.t[0]][0]:(p.sub||'Validator')],['LINKS',ln.length],['NODE','#'+idx]]).slice(0,3),
+  stats=(inf.stats||[[tr('TYPE'),tr(p.t[0]?TAG[p.t[0]][0]:(p.sub||'Validator'))],[tr('LINKS'),ln.length],[tr('NODE'),'#'+idx]]).slice(0,3),
   url=inf.url||'projects.html',ext=/^https?:/.test(url);
  nd.style.setProperty('--c',col);nd.dataset.i=i;
- nd.innerHTML=`<i class="nd-cor"></i><div class="nd-h rv"><i class="nd-led"></i>${ty(p.hub?'Validator hub':'Project // '+idx,'',22)}<b class="nd-s${SOUND?'':' off'}" title="Sound on/off">♪</b><b class="nd-x" title="Close">×</b></div>`+
+ nd.innerHTML=`<i class="nd-cor"></i><div class="nd-h rv"><i class="nd-led"></i>${ty(p.hub?tr('Validator hub'):tr('Project //')+' '+idx,'',22)}<b class="nd-s${SOUND?'':' off'}" title="${esc(tr('Sound on/off'))}">♪</b><b class="nd-x" title="${esc(tr('Close'))}">×</b></div>`+
  `<div class="nd-t rv"><img src="${esc(p.im.src)}" alt=""><div>${ty(p.n,'',30,'h3')}${tags}</div></div>`+
  `<p class="nd-d rv">${ty(desc,'',11)}</p>`+
  `<div class="nd-g rv">${stats.map(([l,v])=>`<div class="rv"><small>${ty(l,'',24)}</small><b>${ty(v,'',30)}</b></div>`).join('')}</div>`+
- (ln.length?`<div class="nd-l rv"><small>${ty('Connected','',24)}</small>${ln.map(([o,tg,c])=>`<button type="button" class="nd-ch rv" data-i="${o}" style="--tc:${c}">${ty(P[o].logo.n,'',26)}<em>${LKN[tg]}</em></button>`).join('')}</div>`:'')+
- `<a class="nd-b rv" href="${esc(url)}"${ext?' target="_blank" rel="noopener"':''}>${ty('Open project page ↗','',22)}</a>`+
- `<div class="nd-f rv">${ty('sys · node link ok · '+ln.length+' link'+(ln.length===1?'':'s'),'',16)}</div>`;
+ (ln.length?`<div class="nd-l rv"><small>${ty(tr('Connected'),'',24)}</small>${ln.map(([o,tg,c])=>`<button type="button" class="nd-ch rv" data-i="${o}" style="--tc:${c}">${ty(P[o].logo.n,'',26)}<em>${esc(tr(LKN[tg]))}</em></button>`).join('')}</div>`:'')+
+ `<a class="nd-b rv" href="${esc(url)}"${ext?' target="_blank" rel="noopener"':''}>${ty(tr('Open project page')+' ↗','',22)}</a>`+
+ `<div class="nd-f rv">${ty(tr('sys · node link ok')+' · '+ln.length+' '+tr(ln.length===1?'link':'links'),'',16)}</div>`;
  sel=i;nd.style.display='block';nd.style.animation='none';void nd.offsetWidth;nd.style.animation='';
  ndW=nd.offsetWidth||ndW;ndH=nd.offsetHeight||ndH;
  // pip pip khi bảng bật ra, rồi từng dòng chữ chạy lần lượt (mỗi dòng: 1 tiếng pip khi bắt đầu, tick nhẹ khi gõ)
- beep(1320,.06,.05);beep(1760,.07,.05,.1);
+ if(!q){beep(1320,.06,.05);beep(1760,.07,.05,.1)}
  const tok=++ndTok,steps=[...nd.querySelectorAll('.ty')],car=document.createElement('i');car.className='nd-c';let si=0;
  const next=()=>{if(tok!==ndTok)return;if(si>=steps.length){return}
   const el=steps[si++],full=el.dataset.t,sp=+el.dataset.s||18,A=el.firstChild,B=el.lastChild,per=full.length>40?2:1;let r=el.closest('.rv');
   while(r){r.classList.add('on');r=r.parentElement&&r.parentElement.closest('.rv')}
-  beep(980+(si%4)*140,.035,.03);A.after(car);let k=0;const t0=performance.now();
+  if(!q)beep(980+(si%4)*140,.035,.03);A.after(car);let k=0;const t0=performance.now();
   // gõ theo thời gian thực (khung hình chậm cũng không kéo dài), tick nhẹ mỗi 3 ký tự
-  const tick=()=>{if(tok!==ndTok)return;const n=Math.min(full.length,1+Math.floor((performance.now()-t0)*per/(sp*.5)));if(n!==k){if(Math.floor(n/3)!==Math.floor(k/3))beep(2300+(n%5)*90,.012,.012);k=n;A.textContent=full.slice(0,k);B.textContent=full.slice(k)}
+  const tick=()=>{if(tok!==ndTok)return;const n=Math.min(full.length,1+Math.floor((performance.now()-t0)*per/(sp*.5)));if(n!==k){if(Math.floor(n/3)!==Math.floor(k/3))if(!q)beep(2300+(n%5)*90,.012,.012);k=n;A.textContent=full.slice(0,k);B.textContent=full.slice(k)}
    if(k<full.length)setTimeout(tick,16);else setTimeout(next,40)};tick()};
  setTimeout(next,480)}
 // ---- kéo chuột để xoay 360° theo mọi hướng (quanh trục màn hình), cuộn chuột để zoom tại vị trí con trỏ
@@ -235,6 +240,8 @@ addEventListener('wheel',e=>{if(e.target.closest&&e.target.closest('.nd-info'))r
  OXt=(mx-cx)-((mx-cx)-OXt)*k;OYt=(my-cy)-((my-cy)-OYt)*k;UZt=nz},{passive:false});
 document.addEventListener('mouseleave',()=>{mx=my=-1e3});
 addEventListener('keydown',e=>{if(e.key==='Escape'){zt=0;setNote();closeInfo()}});
+// lang.js đổi ngôn ngữ → vẽ lại ghi chú và bảng thông tin (nếu đang mở) bằng ngôn ngữ mới
+addEventListener('ap:lang',()=>{setNote();if(sel!==null)openInfo(sel,true)});
 addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;if(!drag)return;moved+=Math.abs(e.clientX-lx)+Math.abs(e.clientY-ly);const t=e.pointerType==='touch',gy=(e.clientX-lx)*.0075,gx=t?0:(e.clientY-ly)*.0075;UQ=qm(qm([Math.cos(gx/2),Math.sin(gx/2),0,0],[Math.cos(gy/2),0,Math.sin(gy/2),0]),UQ);const l=Math.hypot(UQ[0],UQ[1],UQ[2],UQ[3]);UQ=UQ.map(v=>v/l);lx=e.clientX;ly=e.clientY});
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const t=c.dataset.tag;filter=filter===t?null:t;document.querySelectorAll('.chip').forEach(d=>d.classList.toggle('on',d.dataset.tag===filter));setNote()});
 document.querySelectorAll('.mode').forEach(c=>c.onclick=()=>{target=+c.dataset.m;B.length=0;zt=0;setNote();document.querySelectorAll('.mode').forEach(d=>d.classList.toggle('on',d===c))});
@@ -303,7 +310,7 @@ function f(T){
   x.strokeStyle=col;x.lineWidth=h?3:2;x.beginPath();x.arc(s.x,s.y,r,0,7);x.stroke();
   if(i===sel){x.globalAlpha=.55;x.lineWidth=1.5;x.beginPath();x.arc(s.x,s.y,r+6+3*Math.sin(T/180),0,7);x.stroke()}}
  x.globalAlpha=1;
- if(hov!==null&&hov!==sel){const s=S[hov],p=P[hov].logo,txt=p.sub||p.t.map(t=>TAG[t][0]).join(' • '),col=p.t[0]?TAG[p.t[0]][1]:'#fde047';x.font='600 12px system-ui';
+ if(hov!==null&&hov!==sel){const s=S[hov],p=P[hov].logo,txt=p.sub?tr(p.sub):p.t.map(t=>tr(TAG[t][0])).join(' • '),col=p.t[0]?TAG[p.t[0]][1]:'#fde047';x.font='600 12px system-ui';
   const w=Math.max(x.measureText(p.n).width,x.measureText(txt).width)+24,bx=Math.min(s.x+22,W-w-8),byy=s.y-30;
   x.fillStyle='rgba(5,11,23,.92)';x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.roundRect(bx,byy,w,46,8);x.fill();x.stroke();x.textAlign='left';x.fillStyle='#fff';x.fillText(p.n,bx+12,byy+19);x.fillStyle=col;x.fillText(txt,bx+12,byy+36)}
  if(sel!==null&&nd){const s=S[sel],pl=P[sel].logo,col=pl.t[0]?TAG[pl.t[0]][1]:'#fde047',rN=(pl.hub?20:11+13*D(s.z))*s.s*sz+6;
@@ -314,5 +321,6 @@ function f(T){
    x.beginPath();x.moveTo(s.x+ux*rN,s.y);x.lineTo(ex-ux*14,s.y);x.lineTo(ex,ey);x.stroke();x.setLineDash([]);x.fillRect(ex-2.5,ey-2.5,5,5);x.restore()}}
  document.body.style.cursor=inM&&!overP?(drag?'grabbing':hov!==null?'pointer':'grab'):'';
  requestAnimationFrame(f)}
+setNote(); // hiện hướng dẫn đúng ngay từ đầu (HTML có thể còn dòng mặc định cũ)
 requestAnimationFrame(f);
 })();
