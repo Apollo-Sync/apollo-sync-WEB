@@ -1,5 +1,6 @@
 // ApolloSYNC — Cloudflare Worker (chạy cùng site tĩnh, xem wrangler.jsonc)
 //   GET  /api/lang       → { country } theo IP người truy cập (Cloudflare tự biết, không gọi dịch vụ ngoài)
+//   GET  /api/health     → { ok, provider } để kiểm tra nhanh (mở trên trình duyệt)
 //   POST /api/translate  → { target, strings:[…] } ⇒ { translations:[…] }  (dịch từ English)
 //        strings = văn bản đã escape (&amp; &lt; &gt;) có thể kèm thẻ đánh dấu <x0>…</x0>, <x1/>; translations = văn bản thường, vẫn giữ các thẻ <xN> đó
 //
@@ -16,6 +17,7 @@ const LANGS = {
   ru: ['ru', 'ru'], uk: ['uk', 'uk'], vi: ['vi', 'vi'], zh: ['zh-CN', 'zh']
 };
 const NAMES = { bn: 'bengali', tl: 'tagalog', hi: 'hindi', id: 'indonesian', ko: 'korean', ha: 'hausa', ru: 'russian', uk: 'ukrainian', vi: 'vietnamese', zh: 'chinese' };
+// Lưu ý: gói Workers miễn phí chỉ cho 50 lệnh con / lượt; mỗi câu qua Workers AI là 1 lệnh → trình duyệt gửi tối đa 20 câu / lượt
 const MAX_STRINGS = 80, MAX_TOTAL = 7000, MAX_ONE = 1200;   // giới hạn mỗi yêu cầu (chống lạm dụng quota)
 
 const json = (o, status = 200, h = {}) => new Response(JSON.stringify(o), {
@@ -28,6 +30,8 @@ export default {
   async fetch(req, env, ctx) {
     const u = new URL(req.url);
     if (u.pathname === '/api/lang') return json({ country: (req.cf && req.cf.country) || null });
+    // /api/health: mở trên trình duyệt để kiểm tra Worker đã chạy chưa và đang dùng nhà cung cấp dịch nào
+    if (u.pathname === '/api/health') return json({ ok: true, provider: env.GOOGLE_TRANSLATE_KEY ? 'google' : env.AI ? 'workers-ai' : null });
     if (u.pathname === '/api/translate') return translate(req, env, ctx, u);
     return env.ASSETS.fetch(req);
   }
@@ -50,7 +54,7 @@ async function translate(req, env, ctx, u) {
   try {
     out = env.GOOGLE_TRANSLATE_KEY ? await viaGoogle(S, lang[0], env.GOOGLE_TRANSLATE_KEY)
       : env.AI ? await viaWorkersAI(S, lang[1], env.AI) : null;
-  } catch (e) { return json({ error: 'provider failed' }, 502); }
+  } catch (e) { return json({ error: 'provider failed', detail: String(e && e.message || e).slice(0, 200) }, 502); }
   if (!out) return json({ error: 'no translation provider configured' }, 501);
 
   const body = JSON.stringify({ translations: out });

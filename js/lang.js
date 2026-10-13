@@ -167,7 +167,7 @@
   async function requestTranslations(lang, list) {
     const chunks = []; let part = [], len = 0, start = 0;
     list.forEach((s, i) => {
-      if (part.length && (part.length >= 60 || len + s.length > 4500)) { chunks.push([start, part]); part = []; len = 0; start = i; }
+      if (part.length && (part.length >= 20 || len + s.length > 3000)) { chunks.push([start, part]); part = []; len = 0; start = i; }
       part.push(s); len += s.length;
     });
     if (part.length) chunks.push([start, part]);
@@ -176,7 +176,11 @@
       while (k < chunks.length) {
         const [st, arr] = chunks[k++];
         const r = await timeout(fetch(API_TRANSLATE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ target: lang, strings: arr }) }), 30000);
-        if (!r.ok) throw new Error('translate ' + r.status);
+        if (!r.ok) {
+          const j = await r.json().catch(() => ({}));
+          const err = new Error('translate HTTP ' + r.status + (j.error ? ': ' + j.error : '') + (j.detail ? ' (' + j.detail + ')' : ''));
+          err.status = r.status; throw err;
+        }
         const j = await r.json();
         arr.forEach((_, i) => { out[st + i] = j.translations[i]; });
       }
@@ -226,8 +230,9 @@
       done(lang, announce);
     } catch (e) {
       if (my !== token) return;
-      console.warn('[lang] dịch không thành công, giữ nguyên English:', e);
+      console.error('[lang] dịch không thành công, giữ nguyên English:', e);
       cur = 'en'; dict = new Map(); render(true); show('en'); done('en', announce);
+      toast(e);
     }
   }
   function done(lang, announce) {
@@ -257,6 +262,8 @@
 .ap-lang-m button[aria-selected=true]{color:#22d3ee}
 .ap-lang-m button[aria-selected=true] .k{border-color:#22d3ee;color:#22d3ee}
 .ap-lang-m button[aria-selected=true]::after{content:"✓";margin-left:auto}
+
+.ap-lang-t{position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:300px;padding:9px 12px;border:1px solid #f87171;border-radius:10px;background:#1a0d12;color:#fecaca;font:500 13px/1.4 inherit;font-family:inherit;box-shadow:0 12px 36px rgba(0,0,0,.6);z-index:101}
 @keyframes apIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @keyframes apSpin{to{transform:rotate(360deg)}}`;
 
@@ -307,6 +314,17 @@
     menu.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.c === code)));
   }
   const busy = on => btn && btn.classList.toggle('busy', on);
+  // báo lỗi dịch ngay dưới nút (và chi tiết trong Console) thay vì lặng lẽ quay về English
+  function toast(e) {
+    const s = e && e.status, why = s === 404 ? 'API not found — deploy worker.js (Cloudflare Worker)'
+      : s === 501 ? 'No translation provider configured (set GOOGLE_TRANSLATE_KEY or enable the AI binding)'
+      : s === 502 ? 'Translation provider returned an error'
+      : s === 403 ? 'Request blocked (origin mismatch)' : (e && e.message === 'timeout' ? 'Translation timed out' : 'Network error');
+    const old = document.querySelector('.ap-lang-t'); if (old) old.remove();
+    const el = document.createElement('div'); el.className = 'ap-lang-t'; el.setAttribute('role', 'alert');
+    el.textContent = 'Translation unavailable' + (s ? ' (HTTP ' + s + ')' : '') + ' · ' + why;
+    btn.parentElement.appendChild(el); setTimeout(() => el.remove(), 9000);
+  }
   const setLang = (code, announce) => { show(code); return apply(code, announce); };
 
   async function boot() {
